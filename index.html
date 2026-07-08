@@ -174,13 +174,19 @@
   .booking-summary { background: linear-gradient(135deg, rgba(166,52,42,0.08), rgba(166,52,42,0.03)); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 0.82rem; color: var(--text-muted); }
   .booking-summary strong { color: var(--white); }
   .summary-row { display: flex; justify-content: space-between; padding: 0.2rem 0; }
-  .success-modal { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 1rem; }
-  .success-box { background: var(--panel); border-radius: 16px; padding: 3rem 2.5rem; text-align: center; max-width: 420px; width: 100%; border: 2px solid var(--gold); animation: popIn 0.3s ease; }
+  .success-modal { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 1rem; overflow: hidden; }
+  .confetti-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+  .confetti-piece { position: absolute; top: -20px; border-radius: 1px; }
+  @keyframes confetti-fall { to { transform: translateY(115vh) rotate(640deg); opacity: 0.85; } }
+  .success-box { position: relative; z-index: 2; background: var(--panel); border-radius: 16px; padding: 3rem 2.5rem; text-align: center; max-width: 420px; width: 100%; border: 2px solid var(--gold); animation: popIn 0.3s ease; }
   @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
-  .success-box h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; color: var(--white); margin-bottom: 0.6rem; }
-  .success-box p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+  .success-box h2 { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: 2.8rem; color: var(--gold); margin-bottom: 0.7rem; }
+  .success-box p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.2rem; }
+  .success-disclaimer { text-align: left; margin-bottom: 1.5rem; }
   .success-box .btn-primary { font-size: 0.85rem; padding: 0.8rem 1.8rem; }
+  .team-checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-top: 0.6rem; letter-spacing: 0; cursor: pointer; text-transform: none; }
+  .team-checkbox-label input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--gold); cursor: pointer; }
+  input#inp-people:disabled { opacity: 0.5; cursor: not-allowed; }
   /* Admin */
   .admin-page { padding-top: 64px; min-height: 100vh; background: #ECDDC3; }
   .admin-header { background: linear-gradient(135deg, #ECDDC3, #FFFBF3); padding: 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
@@ -498,6 +504,7 @@
             <div class="summary-row"><span>Date</span><strong id="sum-date"></strong></div>
             <div class="summary-row"><span>Time</span><strong id="sum-time"></strong></div>
           </div>
+          <div class="form-group"><label>Your Name *</label><input type="text" id="inp-name" placeholder="e.g. Jordan Smith" /></div>
           <div class="form-group">
             <label>Type of Shoot *</label>
             <select id="inp-shoot-type" onchange="handleShootTypeChange()">
@@ -513,7 +520,15 @@
             <label>Please Specify *</label>
             <input type="text" id="inp-shoot-other" placeholder="e.g. Family portraits, headshots, etc." />
           </div>
-          <div class="form-group"><label>Number of People Involved *</label><input type="number" id="inp-people" min="1" step="1" placeholder="e.g. 2" /></div>
+          <div class="form-group">
+            <label>Number of People Involved *</label>
+            <input type="number" id="inp-people" min="1" step="1" placeholder="e.g. 2" />
+            <label class="team-checkbox-label">
+              <input type="checkbox" id="inp-is-team" onchange="handleTeamToggle()" />
+              This is for a whole team
+            </label>
+            <div id="team-disclaimer" class="time-hint hidden">⚠️ Team bookings are only available for game day shoots.</div>
+          </div>
           <div class="form-group">
             <label>Location of Shoot *</label>
             <input type="text" id="inp-location" placeholder="123 Main St, City, CT 06001" oninput="clearLocationError()" />
@@ -619,10 +634,11 @@
   </div>
 </div>
 <div class="success-modal hidden" id="success-modal">
+  <div class="confetti-layer" id="confetti-layer"></div>
   <div class="success-box">
-    <div class="success-icon">✅</div>
     <h2>You're Booked!</h2>
     <p id="success-msg">Your session has been requested. I'll be in touch soon!</p>
+    <div class="info-box success-disclaimer">📋 <strong>Please note:</strong> this booking isn't final yet — I'll follow up with you directly to confirm the details, provide a quote, and confirm that your booking has been accepted.</div>
     <button class="btn-primary" onclick="closeSuccess()">Back to Home</button>
   </div>
 </div>
@@ -1150,15 +1166,55 @@
       document.getElementById('sum-time').textContent = selectedTime;
     } else { sum.style.display = 'none'; }
   }
+  function handleTeamToggle() {
+    const checkbox = document.getElementById('inp-is-team');
+    const numberInput = document.getElementById('inp-people');
+    const disclaimer = document.getElementById('team-disclaimer');
+    if (!checkbox || !numberInput || !disclaimer) return;
+    if (checkbox.checked) {
+      numberInput.value = '';
+      numberInput.disabled = true;
+      numberInput.placeholder = 'Team';
+      disclaimer.classList.remove('hidden');
+    } else {
+      numberInput.disabled = false;
+      numberInput.placeholder = 'e.g. 2';
+      disclaimer.classList.add('hidden');
+    }
+  }
+  function spawnConfetti() {
+    const layer = document.getElementById('confetti-layer');
+    if (!layer) return;
+    const colors = ['#A6342A', '#1A1210'];
+    layer.innerHTML = Array.from({ length: 70 }).map((_, i) => {
+      const color = colors[i % 2];
+      const left = Math.random() * 100;
+      const width = 6 + Math.random() * 5;
+      const height = width * (1.4 + Math.random() * 0.6);
+      const duration = (2.4 + Math.random() * 2.2).toFixed(2);
+      const delay = (Math.random() * 0.5).toFixed(2);
+      const rotate = Math.floor(Math.random() * 360);
+      return `<div class="confetti-piece" style="left:${left}%; width:${width}px; height:${height}px; background:${color}; transform:rotate(${rotate}deg); animation: confetti-fall ${duration}s ease-in ${delay}s forwards;"></div>`;
+    }).join('');
+  }
   async function confirmBooking() {
     if (!selectedDate || !selectedTime) { alert('Please select a date and time.'); return; }
+    const name = document.getElementById('inp-name').value.trim();
+    if (!name) { alert('Please enter your name.'); return; }
     const shootTypeSel = document.getElementById('inp-shoot-type').value;
     if (!shootTypeSel) { alert('Please select a type of shoot.'); return; }
     const otherType = document.getElementById('inp-shoot-other').value.trim();
     if (shootTypeSel === 'Other' && !otherType) { alert('Please specify the type of shoot.'); return; }
-    const peopleVal = document.getElementById('inp-people').value.trim();
-    const people = parseInt(peopleVal, 10);
-    if (!peopleVal || isNaN(people) || people < 1) { alert('Please enter the number of people involved.'); return; }
+    const isTeam = document.getElementById('inp-is-team').checked;
+    let people;
+    if (isTeam) {
+      people = 'Team';
+    } else {
+      const peopleVal = document.getElementById('inp-people').value.trim();
+      const parsedPeople = parseInt(peopleVal, 10);
+      if (!peopleVal || isNaN(parsedPeople) || parsedPeople < 1) { alert('Please enter the number of people involved.'); return; }
+      people = parsedPeople;
+    }
     const location = document.getElementById('inp-location').value.trim();
     if (!isCompleteLocation(location)) {
       const errEl = document.getElementById('location-error');
@@ -1170,7 +1226,7 @@
     const notes = document.getElementById('inp-notes').value.trim();
     const btn = document.getElementById('btn-confirm');
     btn.disabled = true; btn.textContent = 'Saving…';
-    const appt = { id: Date.now(), shootType: shootTypeSel, otherType: shootTypeSel === 'Other' ? otherType : '', people, date: selectedDate, time: selectedTime, phone, location, notes, booked: new Date().toISOString() };
+    const appt = { id: Date.now(), name, shootType: shootTypeSel, otherType: shootTypeSel === 'Other' ? otherType : '', people, date: selectedDate, time: selectedTime, phone, location, notes, booked: new Date().toISOString() };
     const [appts, blocked] = await Promise.all([getAppointments(), getBlockedSlots()]);
     const fullDayBlock = blocked.find(b => b.type === 'full_day' && b.date === selectedDate);
     const timeBlock    = blocked.find(b => b.type === 'time_slot' && b.date === selectedDate && b.time === selectedTime);
@@ -1183,10 +1239,12 @@
     btn.disabled = false; btn.textContent = '📅 Book Session';
     const dateLabel = new Date(selectedDate+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
     const typeLabel = displayShootType(appt);
-    document.getElementById('success-msg').textContent = `Your ${typeLabel} session request is in for ${dateLabel} at ${selectedTime}. I'll reach out to you soon to go over the details and settle on a price!`;
+    document.getElementById('success-msg').textContent = `Hi ${name}, your ${typeLabel} session request is in for ${dateLabel} at ${selectedTime}. I'll reach out to you soon to go over the details and settle on a price!`;
     document.getElementById('success-modal').classList.remove('hidden');
+    spawnConfetti();
     if (typeof emailjs !== 'undefined') {
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        name:      name,
         shootType: typeLabel,
         date:      dateLabel,
         time:      selectedTime,
@@ -1197,8 +1255,10 @@
       }).catch(e => console.warn('Email notification skipped:', e));
     }
     selectedDate = null; selectedTime = null; preselectedShootType = '';
-    ['inp-shoot-type','inp-shoot-other','inp-people','inp-location','inp-phone','inp-notes'].forEach(id => document.getElementById(id).value = '');
+    ['inp-name','inp-shoot-type','inp-shoot-other','inp-people','inp-location','inp-phone','inp-notes'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('shoot-other-group').classList.add('hidden');
+    document.getElementById('inp-is-team').checked = false;
+    handleTeamToggle();
   }
   function closeSuccess() { document.getElementById('success-modal').classList.add('hidden'); showPage('home'); }
   // ── ADMIN ─────────────────────────────────────────────────────────────
@@ -1294,7 +1354,7 @@
       <div class="appt-card">
         <div class="appt-time-badge">${a.time.replace(' ','<br>')}</div>
         <div class="appt-info">
-          <h4>${displayShootType(a)} &nbsp;<span class="appt-pkg">👥 ${a.people}</span></h4>
+          <h4>${a.name ? a.name + ' — ' : ''}${displayShootType(a)} &nbsp;<span class="appt-pkg">👥 ${a.people}</span></h4>
           <p>📍 ${a.location}</p>
           <p>📞 ${a.phone}</p>
           ${a.notes ? `<p style="margin-top:0.3rem;color:rgba(42,29,20,0.35);font-style:italic">${a.notes}</p>` : ''}
@@ -1533,6 +1593,7 @@
       const end = `${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}T${String(endH).padStart(2,'0')}${String(endM).padStart(2,'0')}00`;
       const typeLabel = displayShootType(a);
       const desc = [
+        a.name ? `Name: ${a.name}` : null,
         `People: ${a.people}`,
         `Phone: ${a.phone}`,
         a.notes ? `Notes: ${a.notes}` : null
@@ -1540,7 +1601,7 @@
       lines.push('BEGIN:VEVENT');
       lines.push(`DTSTART:${start}`);
       lines.push(`DTEND:${end}`);
-      lines.push(`SUMMARY:${escICS(typeLabel)} Shoot — Flicks for Champs`);
+      lines.push(`SUMMARY:${escICS(typeLabel)} Shoot${a.name ? ' — ' + escICS(a.name) : ''} — Flicks for Champs`);
       lines.push(`LOCATION:${escICS(a.location)}`);
       lines.push(`DESCRIPTION:${escICS(desc)}`);
       lines.push(`UID:flicksforchamps-${a.id || Date.now()}-${a.date}`);
@@ -1559,7 +1620,7 @@
   renderCalendar();
   renderReel();
   Object.assign(window, {
-    showPage, openBooking, changeMonth, selectDate, handleShootTypeChange, setCustomTime,
+    showPage, openBooking, changeMonth, selectDate, handleShootTypeChange, setCustomTime, handleTeamToggle,
     confirmBooking, closeSuccess, clearLocationError, showAdminLogin, doLogin, doLogout, exportWeekToICS,
     adminGoToday, adminCalChangeMonth, deleteAppt,
     switchAdminTab, availChangeMonth,
