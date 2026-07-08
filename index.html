@@ -683,7 +683,38 @@
      "image" is a URL to the photo (upload somewhere and paste the link, or host on Firebase Storage)
      "caption" is optional text shown on hover
      ============================================================ */
-  const PORTFOLIO_ITEMS = [];
+  const PORTFOLIO_ITEMS = [
+    { category: 'Sports', image: 'https://i.postimg.cc/w3HXdMzm/IMG-0001.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/kD9QdGCs/IMG-0002.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/pyxftrvc/IMG-0003.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/PNhWkJHS/IMG-0004.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/MXx78HwD/IMG-0006.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/5j3w9J9R/IMG-9680.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/grDvcpc5/IMG-9976.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/jCXzqTqm/IMG-9977.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/WtnMpVbL/IMG-9978.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/kBgWBHB6/IMG-9979.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/yk80kGkS/IMG-9980.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/vcZ5cKc4/IMG-9981.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/xc1LcZc3/IMG-9982.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/RNZwNYNb/IMG-9983.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/crkwYcnD/IMG-9984.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/crkwYcnj/IMG-9985.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/0bXDmCSg/IMG-9986.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/3kypZDXs/IMG-9987.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/87FWbrdg/IMG-9988.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/4YKt1hvJ/IMG-9989.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/pm98BnQT/IMG-9990.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/75C7NT15/IMG-9991.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/PCLZM8bZ/IMG-9992.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/87FWbrdM/IMG-9993.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/zy9h2Xpb/IMG-9994.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/LJrPQ6vZ/IMG-9995.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/RWjtpVG7/IMG-9996.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/WdQZYbSS/IMG-9997.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/PLYwgsFy/IMG-9998.jpg' },
+    { category: 'Sports', image: 'https://i.postimg.cc/f3m9Gng8/IMG-9999.jpg' }
+  ];
   // ── HELPERS ───────────────────────────────────────────────────────────
   function isCompleteLocation(addr) {
     if (!addr) return false;
@@ -902,7 +933,38 @@
      { image: 'https://your-image-url.jpg', caption: 'State Championship 2025' }
      "caption" is optional.
      ============================================================ */
-  const HOME_REEL_ITEMS = [];
+  const HOME_REEL_ITEMS = [
+    { image: 'https://i.postimg.cc/w3HXdMzm/IMG-0001.jpg' },
+    { image: 'https://i.postimg.cc/kD9QdGCs/IMG-0002.jpg' },
+    { image: 'https://i.postimg.cc/pyxftrvc/IMG-0003.jpg' },
+    { image: 'https://i.postimg.cc/PNhWkJHS/IMG-0004.jpg' },
+    { image: 'https://i.postimg.cc/MXx78HwD/IMG-0006.jpg' },
+    { image: 'https://i.postimg.cc/5j3w9J9R/IMG-9680.jpg' },
+    { image: 'https://i.postimg.cc/grDvcpc5/IMG-9976.jpg' },
+    { image: 'https://i.postimg.cc/jCXzqTqm/IMG-9977.jpg' },
+    { image: 'https://i.postimg.cc/WtnMpVbL/IMG-9978.jpg' },
+    { image: 'https://i.postimg.cc/kBgWBHB6/IMG-9979.jpg' },
+    { image: 'https://i.postimg.cc/yk80kGkS/IMG-9980.jpg' },
+    { image: 'https://i.postimg.cc/vcZ5cKc4/IMG-9981.jpg' },
+    { image: 'https://i.postimg.cc/xc1LcZc3/IMG-9982.jpg' },
+    { image: 'https://i.postimg.cc/RNZwNYNb/IMG-9983.jpg' },
+    { image: 'https://i.postimg.cc/crkwYcnD/IMG-9984.jpg' },
+    { image: 'https://i.postimg.cc/crkwYcnj/IMG-9985.jpg' },
+    { image: 'https://i.postimg.cc/0bXDmCSg/IMG-9986.jpg' },
+    { image: 'https://i.postimg.cc/3kypZDXs/IMG-9987.jpg' },
+    { image: 'https://i.postimg.cc/87FWbrdg/IMG-9988.jpg' },
+    { image: 'https://i.postimg.cc/4YKt1hvJ/IMG-9989.jpg' },
+    { image: 'https://i.postimg.cc/pm98BnQT/IMG-9990.jpg' },
+    { image: 'https://i.postimg.cc/75C7NT15/IMG-9991.jpg' },
+    { image: 'https://i.postimg.cc/PCLZM8bZ/IMG-9992.jpg' },
+    { image: 'https://i.postimg.cc/87FWbrdM/IMG-9993.jpg' },
+    { image: 'https://i.postimg.cc/zy9h2Xpb/IMG-9994.jpg' },
+    { image: 'https://i.postimg.cc/LJrPQ6vZ/IMG-9995.jpg' },
+    { image: 'https://i.postimg.cc/RWjtpVG7/IMG-9996.jpg' },
+    { image: 'https://i.postimg.cc/WdQZYbSS/IMG-9997.jpg' },
+    { image: 'https://i.postimg.cc/PLYwgsFy/IMG-9998.jpg' },
+    { image: 'https://i.postimg.cc/f3m9Gng8/IMG-9999.jpg' }
+  ];
   function reelPlaceholderHTML(count) {
     return Array.from({ length: count }).map(() => `
       <div class="reel-item">
