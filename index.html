@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flicks for Champs | Sports & Event Photography</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0B0B0D; --bg-2: #141416; --panel: #1B1C20; --panel-light: #222327;
+    --border: rgba(227,168,59,0.16); --border-strong: rgba(227,168,59,0.32);
+    --gold: #E3A83B; --gold-bright: #F2BE5C; --coral: #E2632F;
+    --text: #ECEDEF; --text-muted: #9A9BA5; --white: #ffffff; --danger: #e07070;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(11,11,13,0.95); backdrop-filter: blur(12px);
+    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between;
+    height: 64px; border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--white); letter-spacing: 2px; cursor: pointer; white-space: nowrap; }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s; cursor: pointer; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-admin { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500; transition: all 0.2s; }
+  .nav-admin:hover { background: var(--gold); color: var(--bg); }
+  .hero {
+    position: relative; min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 0%, #1c1a14 0%, #0B0B0D 55%), linear-gradient(160deg, #0B0B0D 0%, #121214 50%, #0B0B0D 100%);
+    display: flex; align-items: center; justify-content: center; overflow: hidden; padding-top: 64px;
+  }
+  .bubbles { position: absolute; inset: 0; pointer-events: none; }
+  .bubble { position: absolute; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), rgba(227,168,59,0.14) 40%, transparent 70%); border: 1px solid rgba(227,168,59,0.25); animation: float linear infinite; }
+  @keyframes float { 0% { transform: translateY(110vh) scale(0.8); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 0.6; } 100% { transform: translateY(-20vh) scale(1.1); opacity: 0; } }
+  .hero::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 80px; background: var(--bg); clip-path: ellipse(55% 100% at 50% 100%); }
+  .hero-content { position: relative; z-index: 2; text-align: center; max-width: 780px; padding: 2rem; }
+  .hero-eyebrow { font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 1.2rem; }
+  .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem,10vw,7rem); line-height: 0.95; color: var(--white); letter-spacing: 3px; margin-bottom: 1.5rem; }
+  .hero-title span { color: var(--gold); }
+  .hero-subtitle { font-size: 1.1rem; color: rgba(255,255,255,0.6); font-weight: 300; line-height: 1.7; max-width: 520px; margin: 0 auto 2.5rem; }
+  .hero-cta { display: inline-flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .btn-primary { background: var(--gold); color: var(--bg); padding: 0.9rem 2.2rem; border: none; border-radius: 4px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; box-shadow: 0 0 30px rgba(227,168,59,0.25); }
+  .btn-primary:hover { background: var(--gold-bright); transform: translateY(-2px); box-shadow: 0 6px 30px rgba(227,168,59,0.4); }
+  .btn-outline { background: transparent; color: var(--white); padding: 0.9rem 2.2rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: all 0.25s; }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .services { padding: 6rem 2rem; background: var(--bg); position: relative; }
+  .section-header { text-align: center; margin-bottom: 1rem; }
+  .section-eyebrow { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.8rem; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem,5vw,3.5rem); color: var(--white); letter-spacing: 2px; margin-bottom: 0.5rem; }
+  .section-sub { color: var(--text-muted); font-size: 0.95rem; max-width: 520px; margin: 0 auto; line-height: 1.6; }
+  .pricing-note { text-align: center; background: linear-gradient(135deg, rgba(227,168,59,0.1), rgba(227,168,59,0.04)); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1.5rem; margin: 1.5rem auto 3.5rem; max-width: 600px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+  .pricing-note strong { color: var(--white); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; align-items: stretch; }
+  .card { background: var(--panel); border-radius: 12px; padding: 2.2rem; border: 1px solid var(--border); transition: all 0.3s; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.4); border-color: var(--border-strong); }
+  .card:hover::before { transform: scaleX(1); }
+  .card-badge { display: inline-block; background: var(--gold); color: var(--bg); font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: 20px; margin-bottom: 1rem; align-self: flex-start; }
+  .card-icon { font-size: 2rem; margin-bottom: 1rem; line-height: 1; }
+  .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px; color: var(--white); margin-bottom: 0.6rem; }
+  .card-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.2rem; }
+  .card-features { list-style: none; margin-bottom: 1.8rem; flex: 1; }
+  .card-features li { padding: 0.45rem 0; font-size: 0.85rem; color: var(--text-muted); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
+  .card-features li:last-child { border-bottom: none; }
+  .card-features li::before { content: '✓'; color: var(--gold); font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .card-btn-row { display: flex; gap: 0.6rem; margin-top: auto; }
+  .btn-book { flex: 1; padding: 0.75rem; background: var(--gold); color: var(--bg); border: none; border-radius: 6px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
+  .btn-book:hover { background: var(--gold-bright); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(227,168,59,0.3); }
+  .btn-book-outline { flex: 1; padding: 0.75rem; background: transparent; color: var(--text); border: 1px solid var(--border-strong); border-radius: 6px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
+  .btn-book-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .questions { background: linear-gradient(135deg, var(--bg-2), #0f1012); padding: 4.5rem 2rem; text-align: center; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .questions-inner { max-width: 560px; margin: 0 auto; }
+  .questions-icon { font-size: 2.8rem; margin-bottom: 1rem; line-height: 1; }
+  .questions h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem,4vw,2.8rem); color: var(--white); letter-spacing: 2px; margin-bottom: 0.6rem; }
+  .questions p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6; }
+  .call-btn { display: inline-flex; align-items: center; gap: 0.7rem; background: var(--panel); color: var(--white); border: 1px solid var(--border-strong); padding: 1rem 2.2rem; border-radius: 8px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.15rem; text-decoration: none; letter-spacing: 0.5px; transition: all 0.25s; }
+  .call-btn:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(227,168,59,0.3); }
+  .call-btn-icon { font-size: 1.3rem; }
+  .why { background: linear-gradient(160deg, #101012, #0B0B0D); padding: 5rem 2rem; color: var(--white); text-align: center; }
+  .why .section-title { color: var(--white); }
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; max-width: 900px; margin: 3rem auto 0; }
+  .why-item { padding: 1.5rem; }
+  .why-icon { font-size: 2.2rem; margin-bottom: 0.8rem; }
+  .why-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: var(--gold); margin-bottom: 0.4rem; }
+  .why-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+  footer { background: var(--bg); padding: 2rem; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; border-top: 1px solid var(--border); }
+  footer span { color: var(--gold); }
+  /* Portfolio */
+  .portfolio-page { padding-top: 64px; min-height: 100vh; background: var(--bg); }
+  .portfolio-header { background: linear-gradient(160deg, #141416, #0B0B0D); padding: 3rem 2rem 2.5rem; text-align: center; border-bottom: 1px solid var(--border); }
+  .portfolio-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem,5vw,3rem); letter-spacing: 3px; color: var(--white); margin-bottom: 0.5rem; }
+  .portfolio-header p { color: var(--text-muted); font-size: 0.95rem; max-width: 480px; margin: 0 auto; }
+  .portfolio-tabs { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; padding: 1.5rem 2rem 0; }
+  .portfolio-tab { padding: 0.5rem 1.2rem; border: 1px solid var(--border-strong); background: var(--panel); color: var(--text-muted); border-radius: 20px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 500; transition: all 0.2s; }
+  .portfolio-tab.active { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 700; }
+  .portfolio-tab:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
+  .portfolio-body { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+  .portfolio-item { position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); aspect-ratio: 4/5; cursor: pointer; background: var(--panel); }
+  .portfolio-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+  .portfolio-item:hover img { transform: scale(1.06); }
+  .portfolio-item-caption { position: absolute; left: 0; right: 0; bottom: 0; padding: 0.6rem 0.8rem; background: linear-gradient(to top, rgba(0,0,0,0.75), transparent); font-size: 0.75rem; color: var(--white); opacity: 0; transition: opacity 0.2s; }
+  .portfolio-item:hover .portfolio-item-caption { opacity: 1; }
+  .portfolio-empty { text-align: center; padding: 5rem 2rem; color: var(--text-muted); }
+  .portfolio-empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.6; }
+  .portfolio-empty p { font-size: 0.9rem; line-height: 1.6; max-width: 420px; margin: 0 auto; }
+  .lightbox-modal { position: fixed; inset: 0; z-index: 220; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; padding: 2rem; }
+  .lightbox-modal img { max-width: 100%; max-height: 82vh; border-radius: 6px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); }
+  .lightbox-caption { color: rgba(255,255,255,0.7); text-align: center; margin-top: 1rem; font-size: 0.9rem; }
+  .lightbox-close { position: absolute; top: 1.5rem; right: 2rem; background: none; border: none; color: var(--white); font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; transition: opacity 0.2s; }
+  .lightbox-close:hover { opacity: 1; }
+  /* Booking */
+  .booking-page { padding-top: 64px; min-height: 100vh; background: var(--bg); }
+  .booking-header { background: linear-gradient(160deg, #141416, #0B0B0D); padding: 3rem 2rem 4rem; text-align: center; color: var(--white); position: relative; border-bottom: 1px solid var(--border); }
+  .booking-header::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 50px; background: var(--bg); clip-path: ellipse(55% 100% at 50% 100%); }
+  .booking-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem,5vw,3rem); letter-spacing: 3px; margin-bottom: 0.5rem; }
+  .booking-header p { color: rgba(255,255,255,0.6); font-size: 0.95rem; }
+  .booking-body { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 4rem; display: grid; grid-template-columns: 1.3fr 1fr; gap: 2.5rem; }
+  @media (max-width: 700px) { .booking-body { grid-template-columns: 1fr; } nav { padding: 0 1rem; } .nav-links a:not(:last-child) { display: none; } }
+  .booking-card { background: var(--panel); border-radius: 12px; padding: 1.8rem; border: 1px solid var(--border); height: fit-content; }
+  .booking-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 1px; color: var(--white); margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 2px solid var(--gold); }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .cal-month { font-weight: 600; font-size: 0.95rem; color: var(--white); }
+  .cal-arrow { background: none; border: 1px solid var(--border-strong); color: var(--gold); width: 30px; height: 30px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+  .cal-arrow:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-bottom: 1.2rem; }
+  .cal-day-label { text-align: center; font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; color: var(--text-muted); padding: 0.3rem 0; }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; font-weight: 500; color: var(--text); }
+  .cal-day:hover:not(.disabled):not(.empty):not(.not-available) { background: rgba(227,168,59,0.1); }
+  .cal-day.selected { background: var(--gold); color: var(--bg); font-weight: 700; }
+  .cal-day.today { border: 1.5px solid var(--gold); color: var(--gold); }
+  .cal-day.disabled { color: #444; cursor: not-allowed; }
+  .cal-day.empty { cursor: default; }
+  .cal-day.not-available { color: #555; cursor: not-allowed; opacity: 0.45; text-decoration: line-through; font-style: italic; }
+  .time-slots { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.4rem; }
+  .slot { padding: 0.45rem 0.2rem; text-align: center; border: 1px solid var(--border-strong); border-radius: 5px; font-size: 0.75rem; cursor: pointer; transition: all 0.15s; color: var(--text); font-weight: 500; }
+  .slot:hover:not(.taken) { border-color: var(--gold); color: var(--gold); background: rgba(227,168,59,0.08); }
+  .slot.selected { background: var(--gold); border-color: var(--gold); color: var(--bg); font-weight: 700; }
+  .slot.taken { background: #222; color: #555; cursor: not-allowed; text-decoration: line-through; }
+  .no-date { color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 1rem; }
+  .form-group { margin-bottom: 1.1rem; }
+  label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--white); margin-bottom: 0.35rem; letter-spacing: 0.3px; }
+  input[type="tel"], input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--border-strong); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.88rem; color: var(--text); background: var(--bg-2); transition: border-color 0.2s; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); background: var(--panel-light); }
+  select { cursor: pointer; color-scheme: dark; }
+  textarea { resize: vertical; min-height: 70px; }
+  .info-box { background: linear-gradient(135deg, rgba(227,168,59,0.12), rgba(227,168,59,0.04)); border: 1px solid var(--border-strong); border-radius: 8px; padding: 0.9rem 1rem; margin-bottom: 1.2rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+  .info-box strong { color: var(--white); }
+  .btn-confirm { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--gold), var(--gold-bright)); color: var(--bg); border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; margin-top: 0.5rem; box-shadow: 0 4px 20px rgba(227,168,59,0.25); }
+  .btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(227,168,59,0.4); }
+  .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .booking-summary { background: linear-gradient(135deg, rgba(227,168,59,0.08), rgba(227,168,59,0.03)); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 0.82rem; color: var(--text-muted); }
+  .booking-summary strong { color: var(--white); }
+  .summary-row { display: flex; justify-content: space-between; padding: 0.2rem 0; }
+  .success-modal { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .success-box { background: var(--panel); border-radius: 16px; padding: 3rem 2.5rem; text-align: center; max-width: 420px; width: 100%; border: 2px solid var(--gold); animation: popIn 0.3s ease; }
+  @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  .success-box h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; color: var(--white); margin-bottom: 0.6rem; }
+  .success-box p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+  .success-box .btn-primary { font-size: 0.85rem; padding: 0.8rem 1.8rem; }
+  /* Admin */
+  .admin-page { padding-top: 64px; min-height: 100vh; background: #0d0d0f; }
+  .admin-header { background: linear-gradient(135deg, #0d0d0f, #17181c); padding: 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .admin-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; color: var(--white); }
+  .admin-header h1 span { color: var(--gold); }
+  .admin-date-btn { background: rgba(227,168,59,0.1); border: 1px solid var(--border-strong); color: var(--gold); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.8rem; transition: all 0.2s; }
+  .admin-date-btn:hover { background: var(--gold); color: var(--bg); }
+  .admin-body { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; text-align: center; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-top: 0.3rem; }
+  .appt-list { display: flex; flex-direction: column; gap: 1rem; }
+  .appt-card { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.2rem; align-items: center; }
+  .appt-time-badge { background: var(--gold); color: var(--bg); font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; padding: 0.5rem 0.8rem; border-radius: 6px; text-align: center; min-width: 70px; }
+  .appt-info h4 { color: var(--white); font-size: 0.95rem; margin-bottom: 0.25rem; }
+  .appt-info p { color: rgba(255,255,255,0.45); font-size: 0.8rem; line-height: 1.5; }
+  .appt-pkg { font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; padding: 0.2rem 0.6rem; border-radius: 10px; background: rgba(227,168,59,0.15); color: var(--gold); border: 1px solid var(--border-strong); white-space: nowrap; }
+  .appt-actions { display: flex; flex-direction: column; gap: 0.5rem; }
+  .action-btn { padding: 0.35rem 0.8rem; border: none; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .action-btn.call { background: rgba(227,168,59,0.15); color: var(--gold); border: 1px solid var(--border-strong); }
+  .action-btn.call:hover { background: var(--gold); color: var(--bg); }
+  .action-btn.maps { background: rgba(226,99,47,0.15); color: var(--coral); border: 1px solid rgba(226,99,47,0.3); }
+  .action-btn.maps:hover { background: var(--coral); color: var(--white); }
+  .action-btn.delete { background: rgba(220,80,80,0.1); color: var(--danger); border: 1px solid rgba(220,80,80,0.2); }
+  .action-btn.delete:hover { background: rgba(220,80,80,0.25); }
+  .no-appts { text-align: center; padding: 4rem 2rem; color: rgba(255,255,255,0.25); }
+  .no-appts-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .no-appts p { font-size: 0.9rem; }
+  .admin-tabs { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; }
+  .admin-tab { padding: 0.55rem 1.4rem; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
+  .admin-tab.active { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 700; }
+  .admin-tab:hover:not(.active) { border-color: var(--border-strong); color: rgba(255,255,255,0.75); }
+  .avail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+  @media (max-width: 640px) { .avail-layout { grid-template-columns: 1fr; } }
+  .avail-panel { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; }
+  .avail-panel h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: var(--gold); margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+  .avail-day-label { text-align: center; font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; color: rgba(255,255,255,0.3); padding: 0.3rem 0; }
+  .avail-cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; font-weight: 500; color: rgba(255,255,255,0.75); }
+  .avail-cal-day:hover:not(.past):not(.empty) { background: rgba(227,168,59,0.1); }
+  .avail-cal-day.selected { background: var(--gold); color: var(--bg); font-weight: 700; }
+  .avail-cal-day.full-blocked { background: rgba(220,80,80,0.12); border: 1px solid rgba(220,80,80,0.3); color: var(--danger); }
+  .avail-cal-day.full-blocked.selected { background: rgba(220,80,80,0.3); color: #ffaaaa; }
+  .avail-cal-day.partial-blocked { border: 1px solid rgba(226,99,47,0.35); }
+  .avail-cal-day.today-mark { outline: 1.5px solid var(--gold); outline-offset: 1px; }
+  .avail-cal-day.past { color: rgba(255,255,255,0.2); cursor: default; }
+  .avail-cal-day.empty { cursor: default; }
+  .block-day-btn { width: 100%; padding: 0.75rem; background: rgba(220,80,80,0.1); border: 1.5px solid rgba(220,80,80,0.3); color: var(--danger); border-radius: 6px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+  .block-day-btn:hover { background: rgba(220,80,80,0.2); }
+  .block-day-btn.is-blocked { background: rgba(220,80,80,0.25); border-color: var(--danger); color: #ffaaaa; }
+  .avail-section-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin: 1rem 0 0.6rem; }
+  .avail-time-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.4rem; }
+  .avail-slot-btn { padding: 0.5rem 0.3rem; text-align: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; font-size: 0.75rem; cursor: pointer; transition: all 0.15s; color: rgba(255,255,255,0.6); font-weight: 500; background: rgba(255,255,255,0.03); font-family: 'Inter', sans-serif; }
+  .avail-slot-btn:hover:not(:disabled) { border-color: rgba(220,80,80,0.4); color: var(--danger); background: rgba(220,80,80,0.08); }
+  .avail-slot-btn.is-blocked { background: rgba(220,80,80,0.15); border-color: rgba(220,80,80,0.4); color: var(--danger); font-weight: 600; }
+  .avail-slot-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .avail-hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 0.9rem 0; }
+  .avail-hint { color: rgba(255,255,255,0.3); font-size: 0.85rem; text-align: center; padding: 2.5rem 0; line-height: 1.6; }
+  .custom-slot-row { display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0.6rem; background: rgba(227,168,59,0.07); border: 1px solid var(--border); border-radius: 5px; margin-bottom: 0.3rem; font-size: 0.8rem; color: rgba(255,255,255,0.8); }
+  .custom-slot-remove { background: none; border: none; color: rgba(220,80,80,0.55); cursor: pointer; font-size: 0.9rem; padding: 0 0.2rem; transition: color 0.15s; line-height: 1; }
+  .custom-slot-remove:hover { color: var(--danger); }
+  .add-custom-time { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+  .add-custom-time input[type="time"] { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid var(--border-strong); border-radius: 5px; color: var(--white); padding: 0.45rem 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.82rem; outline: none; color-scheme: dark; }
+  .add-custom-time input[type="time"]:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+  .btn-add-time { background: var(--gold); color: var(--bg); border: none; border-radius: 5px; padding: 0.45rem 0.9rem; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .btn-add-time:hover { background: var(--gold-bright); }
+  .quick-times { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+  .quick-time-btn { padding: 0.28rem 0.5rem; font-size: 0.7rem; font-weight: 500; border: 1px solid var(--border); border-radius: 4px; background: rgba(227,168,59,0.05); color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+  .quick-time-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(227,168,59,0.12); }
+  .blocked-list-panel { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; }
+  .blocked-list-panel h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: var(--gold); margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+  .blocked-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.65rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; }
+  .blocked-item:last-child { border-bottom: none; }
+  .blocked-item-date { font-weight: 600; color: rgba(255,255,255,0.7); font-size: 0.85rem; min-width: 110px; }
+  .blocked-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; flex: 1; }
+  .btag { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.5px; padding: 0.18rem 0.5rem; border-radius: 10px; }
+  .btag-full { background: rgba(220,80,80,0.2); color: var(--danger); border: 1px solid rgba(220,80,80,0.3); }
+  .btag-time { background: rgba(226,99,47,0.12); color: var(--coral); border: 1px solid rgba(226,99,47,0.25); }
+  .btag-custom { background: rgba(227,168,59,0.12); color: var(--gold); border: 1px solid var(--border-strong); }
+  .avail-legend { margin-top: 0.9rem; display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.7rem; color: rgba(255,255,255,0.3); }
+  .avail-legend span { display: flex; align-items: center; gap: 0.35rem; }
+  .rules-banner { background: rgba(226,99,47,0.1); border: 1px solid rgba(226,99,47,0.3); border-radius: 8px; padding: 0.9rem 1rem; margin-bottom: 1rem; font-size: 0.8rem; color: var(--coral); line-height: 1.5; display: none; }
+  .rules-banner a { color: var(--coral); }
+  .login-modal { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.92); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .login-box { background: #17181c; border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 380px; border: 1px solid var(--border); }
+  .login-box h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px; color: var(--white); margin-bottom: 0.4rem; }
+  .login-box p { color: rgba(255,255,255,0.4); font-size: 0.83rem; margin-bottom: 1.5rem; }
+  .login-box label { color: rgba(255,255,255,0.7); }
+  .login-box input { background: rgba(255,255,255,0.06); border-color: var(--border-strong); color: var(--white); }
+  .login-box input:focus { background: rgba(255,255,255,0.1); }
+  .login-err { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+  .btn-login { width: 100%; padding: 0.85rem; background: var(--gold); color: var(--bg); border: none; border-radius: 6px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; transition: all 0.2s; }
+  .btn-login:hover { background: var(--gold-bright); }
+  .btn-cancel-login { width: 100%; padding: 0.6rem; background: transparent; color: rgba(255,255,255,0.4); border: none; font-family: 'Inter', sans-serif; font-size: 0.83rem; cursor: pointer; margin-top: 0.5rem; }
+  .btn-cancel-login:hover { color: rgba(255,255,255,0.7); }
+  .hidden { display: none !important; }
+  .back-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-family: 'Inter', sans-serif; font-size: 0.82rem; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.8rem; transition: color 0.2s; }
+  .back-btn:hover { color: var(--gold); }
+  .recurring-panel { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; margin-bottom: 1.5rem; }
+  .recurring-panel > h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: var(--gold); margin-bottom: 0.4rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+  .recurring-panel > p { font-size: 0.78rem; color: rgba(255,255,255,0.3); margin-bottom: 1rem; line-height: 1.5; }
+  .recurring-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.4rem; margin-bottom: 0.5rem; }
+  .recurring-day-btn { padding: 0.55rem 0.2rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; background: rgba(255,255,255,0.03); cursor: pointer; transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; font-family: 'Inter', sans-serif; }
+  .recurring-day-btn:hover { border-color: var(--border-strong); background: rgba(227,168,59,0.07); }
+  .recurring-day-btn.selected { border-color: var(--gold) !important; background: rgba(227,168,59,0.12) !important; }
+  .recurring-day-btn.is-off { border-color: rgba(220,80,80,0.3); background: rgba(220,80,80,0.07); }
+  .recurring-day-btn.has-hours { border-color: var(--border-strong); background: rgba(227,168,59,0.07); }
+  .rec-day-name { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; }
+  .recurring-day-btn.is-off .rec-day-name { color: var(--danger); }
+  .recurring-day-btn.has-hours .rec-day-name { color: var(--gold); }
+  .recurring-day-btn.selected .rec-day-name { color: var(--white); }
+  .rec-day-status { font-size: 0.6rem; color: rgba(255,255,255,0.28); text-align: center; line-height: 1.2; }
+  .recurring-day-btn.is-off .rec-day-status { color: rgba(220,80,80,0.6); }
+  .recurring-day-btn.has-hours .rec-day-status { color: rgba(227,168,59,0.65); }
+  .rec-editor-box { background: rgba(255,255,255,0.04); border: 1px solid var(--border-strong); border-radius: 8px; padding: 1.1rem; margin-top: 0.6rem; }
+  .rec-editor-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; color: var(--white); margin-bottom: 0.8rem; }
+  .rec-radio-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.9rem; }
+  .rec-radio { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; font-size: 0.84rem; color: rgba(255,255,255,0.65); }
+  .rec-radio input { accent-color: var(--gold); width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+  .rec-hours-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+  .rec-select { background: rgba(255,255,255,0.06); border: 1px solid var(--border-strong); border-radius: 5px; color: var(--white); padding: 0.4rem 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.82rem; outline: none; cursor: pointer; color-scheme: dark; }
+  .rec-select:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+  .rec-editor-actions { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+  .rec-remove-btn { background: rgba(220,80,80,0.1); border: 1px solid rgba(220,80,80,0.25); color: var(--danger); border-radius: 5px; padding: 0.45rem 0.9rem; font-family: 'Inter', sans-serif; font-size: 0.8rem; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+  .rec-remove-btn:hover { background: rgba(220,80,80,0.22); }
+  .rec-cancel-btn { background: none; border: none; color: rgba(255,255,255,0.3); font-family: 'Inter', sans-serif; font-size: 0.8rem; cursor: pointer; padding: 0.45rem 0.4rem; transition: color 0.15s; }
+  .rec-cancel-btn:hover { color: rgba(255,255,255,0.6); }
+  .admin-overview-cal { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; margin-bottom: 1.5rem; }
+  .admin-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .admin-cal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: var(--white); }
+  .admin-cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+  .admin-cal-label { text-align: center; font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; color: rgba(255,255,255,0.3); padding: 0.4rem 0; }
+  .admin-cal-day { position: relative; border-radius: 8px; padding: 0.4rem 0.2rem 0.5rem; cursor: pointer; transition: all 0.15s; min-height: 52px; display: flex; flex-direction: column; align-items: center; border: 1px solid transparent; gap: 3px; }
+  .admin-cal-day:hover:not(.empty) { background: rgba(227,168,59,0.08); border-color: var(--border); }
+  .admin-cal-day.selected { background: rgba(227,168,59,0.15); border-color: var(--gold) !important; }
+  .admin-cal-day.today-admin { border-color: var(--border-strong) !important; }
+  .admin-cal-day.past { opacity: 0.5; }
+  .admin-cal-day.has-appts { background: rgba(227,168,59,0.05); }
+  .admin-cal-day.empty { cursor: default; border: none; }
+  .admin-day-num { font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.65); line-height: 1; }
+  .admin-cal-day.today-admin .admin-day-num { color: var(--gold); font-weight: 700; }
+  .admin-cal-day.selected .admin-day-num { color: var(--white); font-weight: 700; }
+  .appt-count-badge { background: var(--gold); color: var(--bg); font-size: 0.62rem; font-weight: 800; border-radius: 8px; padding: 0.08rem 0.38rem; line-height: 1.5; min-width: 16px; text-align: center; }
+  .appt-count-badge.many { background: var(--coral); color: var(--white); }
+  .admin-day-detail { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; }
+  .admin-day-detail-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: var(--gold); margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">FLICKS <span>FOR CHAMPS</span></div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('portfolio')">Portfolio</a>
+    <a onclick="openBooking()">Book Now</a>
+    <button class="nav-admin" onclick="showAdminLogin()">Owner Login</button>
+  </div>
+</nav>
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="bubbles" id="bubbles"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Sports &amp; Event Photography · Connecticut &amp; Surrounding Areas</div>
+      <h1 class="hero-title">Flicks<br>For<br><span>Champs</span></h1>
+      <p class="hero-subtitle">Capturing the action, the emotion, and the moments that matter — on the field, at the altar, or on graduation day. I come to you.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="openBooking()">Book Now</button>
+        <button class="btn-outline" onclick="showPage('portfolio')">View Portfolio</button>
+      </div>
+    </div>
+  </section>
+  <section class="services" id="services">
+    <div class="section-header">
+      <div class="section-eyebrow">What I Shoot</div>
+      <h2 class="section-title">Every Big Moment, Covered</h2>
+      <p class="section-sub">From game-day action to graduation day, I bring a photographer's eye wherever you need me.</p>
+    </div>
+    <div class="pricing-note">
+      <strong>💬 Pricing is custom to every session.</strong> Tell me what you need when you book, and I'll follow up personally to go over the details and settle on a price.
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-badge">Specialty</div>
+        <div class="card-icon">🏅</div>
+        <div class="card-title">Sports</div>
+        <div class="card-desc">Game action, team photos, and senior nights — captured with an eye for the intensity of competition.</div>
+        <ul class="card-features">
+          <li>In-game action shots</li>
+          <li>Team &amp; individual portraits</li>
+          <li>Digital gallery delivered</li>
+        </ul>
+        <div class="card-btn-row">
+          <button class="btn-book-outline" onclick="openPortfolioCategory('Sports')">View Photos</button>
+          <button class="btn-book" onclick="openBooking('Sports')">Book This</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💍</div>
+        <div class="card-title">Weddings</div>
+        <div class="card-desc">From getting-ready shots to the last dance, your day documented beautifully from start to finish.</div>
+        <ul class="card-features">
+          <li>Ceremony &amp; reception coverage</li>
+          <li>Candid &amp; posed shots</li>
+          <li>Digital gallery delivered</li>
+        </ul>
+        <div class="card-btn-row">
+          <button class="btn-book-outline" onclick="openPortfolioCategory('Weddings')">View Photos</button>
+          <button class="btn-book" onclick="openBooking('Weddings')">Book This</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💑</div>
+        <div class="card-title">Couples</div>
+        <div class="card-desc">Engagement shoots, anniversaries, and portraits that capture your connection.</div>
+        <ul class="card-features">
+          <li>On-location or studio-style</li>
+          <li>Guided posing for natural shots</li>
+          <li>Digital gallery delivered</li>
+        </ul>
+        <div class="card-btn-row">
+          <button class="btn-book-outline" onclick="openPortfolioCategory('Couples')">View Photos</button>
+          <button class="btn-book" onclick="openBooking('Couples')">Book This</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎓</div>
+        <div class="card-title">Graduation</div>
+        <div class="card-desc">Cap-and-gown portraits and ceremony coverage to mark the milestone in style.</div>
+        <ul class="card-features">
+          <li>Cap &amp; gown portraits</li>
+          <li>Ceremony coverage available</li>
+          <li>Digital gallery delivered</li>
+        </ul>
+        <div class="card-btn-row">
+          <button class="btn-book-outline" onclick="openPortfolioCategory('Graduation')">View Photos</button>
+          <button class="btn-book" onclick="openBooking('Graduation')">Book This</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="questions">
+    <div class="questions-inner">
+      <div class="questions-icon">💬</div>
+      <h2>Have Questions? I'm Always Here to Help!</h2>
+      <p>Not sure what kind of session is right for you? Give me a call or text anytime — I'm happy to chat.</p>
+      <!-- ★ Replace the number in both the href AND the visible text below ★ -->
+      <a href="tel:+15550000000" class="call-btn">
+        <span class="call-btn-icon">📞</span>
+        (555) 000-0000
+      </a>
+    </div>
+  </section>
+  <section class="why">
+    <div class="section-eyebrow" style="color:var(--gold)">Why Choose Me</div>
+    <h2 class="section-title">On Location, On Point</h2>
+    <div class="why-grid">
+      <div class="why-item"><div class="why-icon">📍</div><div class="why-label">On Location</div><div class="why-desc">I travel to your game, venue, or location — anywhere in the area.</div></div>
+      <div class="why-item"><div class="why-icon">⚡</div><div class="why-label">Action-Ready</div><div class="why-desc">Fast shutter, faster instincts — I know how to catch the moment before it's gone.</div></div>
+      <div class="why-item"><div class="why-icon">📅</div><div class="why-label">Easy Booking</div><div class="why-desc">Tell me what you need, pick a time, and I'll take care of the rest.</div></div>
+      <div class="why-item"><div class="why-icon">🖼️</div><div class="why-label">Fast Turnaround</div><div class="why-desc">Edited galleries delivered quickly so you can relive the moment sooner.</div></div>
+    </div>
+  </section>
+  <footer>&copy; 2026 <span>Flicks for Champs</span>. Sports &amp; Event Photography · Available for Travel</footer>
+</div>
+<div id="page-portfolio" class="page">
+  <div class="portfolio-page">
+    <div class="portfolio-header">
+      <button class="back-btn" onclick="showPage('home')" style="margin:0 auto 1rem;display:flex;">← Back to Home</button>
+      <h1>Portfolio</h1>
+      <p>A look at recent sessions — sports, couples, weddings, and graduation.</p>
+    </div>
+    <div class="portfolio-tabs" id="portfolio-tabs"></div>
+    <div class="portfolio-body">
+      <div id="portfolio-grid"></div>
+    </div>
+  </div>
+</div>
+<div id="page-booking" class="page">
+  <div class="booking-page">
+    <div class="booking-header">
+      <button class="back-btn" onclick="showPage('home')" style="margin:0 auto 1rem;display:flex;">← Back to Home</button>
+      <h1>Book Your Session</h1>
+      <p>Tell me what you need, then pick a date and time</p>
+    </div>
+    <div class="booking-body">
+      <div>
+        <div class="booking-card" style="margin-bottom:1.5rem">
+          <h3>📅 Pick a Date</h3>
+          <div class="cal-nav">
+            <button class="cal-arrow" onclick="changeMonth(-1)">‹</button>
+            <div class="cal-month" id="cal-month-label"></div>
+            <button class="cal-arrow" onclick="changeMonth(1)">›</button>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <div class="booking-card">
+          <h3>⏰ Pick a Time</h3>
+          <div id="time-slots-container"><div class="no-date">Select a date above to see available times.</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="booking-card">
+          <h3>Session Details</h3>
+          <div class="info-box"><strong>💬 I'll reach out to you</strong> as soon as possible after you book to go over the details and settle on a price for your session.</div>
+          <div class="booking-summary" id="booking-summary" style="display:none">
+            <div class="summary-row"><span>Session</span><strong id="sum-type"></strong></div>
+            <div class="summary-row"><span>Date</span><strong id="sum-date"></strong></div>
+            <div class="summary-row"><span>Time</span><strong id="sum-time"></strong></div>
+          </div>
+          <div class="form-group">
+            <label>Type of Shoot *</label>
+            <select id="inp-shoot-type" onchange="handleShootTypeChange()">
+              <option value="">Select a type…</option>
+              <option value="Sports">Sports</option>
+              <option value="Couples">Couples</option>
+              <option value="Weddings">Weddings</option>
+              <option value="Graduation">Graduation</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group hidden" id="shoot-other-group">
+            <label>Please Specify *</label>
+            <input type="text" id="inp-shoot-other" placeholder="e.g. Family portraits, headshots, etc." />
+          </div>
+          <div class="form-group"><label>Number of People Involved *</label><input type="number" id="inp-people" min="1" step="1" placeholder="e.g. 2" /></div>
+          <div class="form-group">
+            <label>Location of Shoot *</label>
+            <input type="text" id="inp-location" placeholder="123 Main St, City, CT 06001" oninput="clearLocationError()" />
+            <div id="location-error" style="display:none;color:var(--danger);font-size:0.75rem;margin-top:0.35rem;">⚠️ Please enter a complete location: street number, street name, city, state, and zip code.</div>
+            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem;">Example: 123 Main St, Hartford, CT 06103</div>
+          </div>
+          <div class="form-group"><label>Phone Number *</label><input type="tel" id="inp-phone" placeholder="(555) 000-0000" /></div>
+          <div class="form-group"><label>Additional Details (optional)</label><textarea id="inp-notes" placeholder="Anything I should know? Teams involved, specific shots, timing, etc."></textarea></div>
+          <button class="btn-confirm" id="btn-confirm" onclick="confirmBooking()">📅 Book Session</button>
+          <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;margin-top:0.8rem;">* Required fields. I'll follow up if there are any questions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="page-admin" class="page">
+  <div class="admin-page">
+    <div class="admin-header">
+      <div>
+        <button class="back-btn" onclick="showPage('home')" style="margin-bottom:0.5rem">← Back to Site</button>
+        <h1>Admin <span>Dashboard</span></h1>
+        <button onclick="doLogout()" style="background:rgba(220,80,80,0.15);border:1px solid rgba(220,80,80,0.3);color:#e07070;padding:0.4rem 1rem;border-radius:4px;font-family:Inter,sans-serif;font-size:0.8rem;cursor:pointer;margin-top:0.4rem;transition:all 0.2s;">Sign Out</button>
+      </div>
+    </div>
+    <div class="admin-body">
+      <div class="admin-tabs">
+        <button class="admin-tab active" id="tab-appointments" onclick="switchAdminTab('appointments')">📅 Appointments</button>
+        <button class="admin-tab" id="tab-availability" onclick="switchAdminTab('availability')">🚫 Manage Availability</button>
+      </div>
+      <div id="admin-appointments-view">
+        <div class="admin-stats" id="admin-stats"></div>
+        <div class="admin-overview-cal">
+          <div class="admin-cal-header">
+            <button class="cal-arrow" onclick="adminCalChangeMonth(-1)">‹</button>
+            <div class="admin-cal-title" id="admin-cal-month-label">Loading…</div>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <button class="admin-date-btn" onclick="adminGoToday()">Today</button>
+              <button class="cal-arrow" onclick="adminCalChangeMonth(1)">›</button>
+            </div>
+          </div>
+          <div class="admin-cal-grid" id="admin-cal-grid"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;flex-wrap:wrap;gap:0.5rem;">
+            <p style="font-size:0.7rem;color:rgba(255,255,255,0.25);margin:0;">Click any date to see that day's appointments below.</p>
+            <button onclick="exportWeekToICS()" style="background:rgba(227,168,59,0.12);border:1px solid var(--border-strong);color:var(--gold);padding:0.45rem 1rem;border-radius:6px;font-family:Inter,sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;" onmouseover="this.style.background='rgba(227,168,59,0.22)'" onmouseout="this.style.background='rgba(227,168,59,0.12)'">
+              📅 Export This Week to Google Calendar
+            </button>
+          </div>
+        </div>
+        <div class="admin-day-detail">
+          <div class="admin-day-detail-title" id="admin-detail-heading">← Select a date above</div>
+          <div class="appt-list" id="appt-list"></div>
+        </div>
+      </div>
+      <div id="admin-availability-view" class="hidden">
+        <div class="rules-banner" id="rules-banner">
+          ⚠️ <strong>Could not save changes.</strong> Your Firestore security rules are likely blocking writes.
+          Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a> → Firestore Database → Rules and make sure authenticated users can write. Also add a rule for the <code>recurring_rules</code> collection.
+        </div>
+        <div class="recurring-panel">
+          <h3>📆 Recurring Schedule</h3>
+          <p>Set rules that apply every week. Click a day to edit it. These work alongside your per-date blocks below.</p>
+          <div class="recurring-days" id="recurring-days"></div>
+          <div id="recurring-editor"></div>
+        </div>
+        <div class="avail-layout">
+          <div class="avail-panel">
+            <h3>📅 Select a Date</h3>
+            <div class="cal-nav">
+              <button class="cal-arrow" onclick="availChangeMonth(-1)">‹</button>
+              <div class="cal-month" id="avail-cal-month" style="color:var(--white)"></div>
+              <button class="cal-arrow" onclick="availChangeMonth(1)">›</button>
+            </div>
+            <div class="cal-grid" id="avail-cal-grid"></div>
+            <div class="avail-legend">
+              <span><span style="color:#e07070;font-size:0.9rem">■</span> Full day blocked</span>
+              <span><span style="color:var(--coral);font-size:0.9rem">□</span> Some times blocked</span>
+              <span><span style="color:var(--gold);font-size:0.9rem">+</span> Extra hours added</span>
+            </div>
+          </div>
+          <div class="avail-panel">
+            <h3>⚙️ Set Availability</h3>
+            <div id="avail-slots-section">
+              <p class="avail-hint">← Select a date on the calendar to manage its availability.</p>
+            </div>
+          </div>
+        </div>
+        <div class="blocked-list-panel">
+          <h3>🚫 All Blocked &amp; Custom Hours</h3>
+          <div id="blocked-list"><p style="color:rgba(255,255,255,0.3);font-size:0.85rem;text-align:center;padding:1rem 0;">No blocked dates or custom hours.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="login-modal hidden" id="login-modal">
+  <div class="login-box">
+    <h2>Owner Login</h2>
+    <p>Sign in with your Firebase email and password.</p>
+    <div class="form-group"><label>Email</label><input type="text" id="admin-email-input" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()" /></div>
+    <div class="form-group"><label>Password</label><input type="password" id="admin-pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()" /><div class="login-err" id="login-err"></div></div>
+    <button class="btn-login" id="login-btn" onclick="doLogin()">Sign In</button>
+    <button class="btn-cancel-login" onclick="document.getElementById('login-modal').classList.add('hidden')">Cancel</button>
+  </div>
+</div>
+<div class="success-modal hidden" id="success-modal">
+  <div class="success-box">
+    <div class="success-icon">✅</div>
+    <h2>You're Booked!</h2>
+    <p id="success-msg">Your session has been requested. I'll be in touch soon!</p>
+    <button class="btn-primary" onclick="closeSuccess()">Back to Home</button>
+  </div>
+</div>
+<div class="lightbox-modal hidden" id="lightbox-modal" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)">✕</button>
+  <div>
+    <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+<script type="module">
+  const FIREBASE_CONFIG = {
+    apiKey:            "AIzaSyBVeZ6DH2d5GyiirvDylwtkCtxSmL391sc",
+    authDomain:        "pureshinesite.firebaseapp.com",
+    projectId:         "pureshinesite",
+    storageBucket:     "pureshinesite.firebasestorage.app",
+    messagingSenderId: "12153940692",
+    appId:             "1:12153940692:web:a7be00f90680837f28e941"
+  };
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  // ── EMAILJS CONFIG ────────────────────────────────────────────────────
+  const EMAILJS_PUBLIC_KEY  = 'a20lukxqkikUOgvdP';
+  const EMAILJS_SERVICE_ID  = 'service_6welcn6';
+  const EMAILJS_TEMPLATE_ID = 'template_fluaqu9';
+  if (typeof emailjs !== 'undefined') emailjs.init(EMAILJS_PUBLIC_KEY);
+  const _app  = initializeApp(FIREBASE_CONFIG);
+  const _db   = getFirestore(_app);
+  const _auth = getAuth(_app);
+  const COLL           = "appointments";
+  const AVAIL_COLL     = "blocked_availability";
+  const CUSTOM_COLL    = "custom_slots";
+  const RECURRING_COLL = "recurring_rules";
+  const DAYS_FULL  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const HOUR_OPTIONS = (() => {
+    const opts = [];
+    for (let h = 6; h <= 22; h++) {
+      for (const m of [0, 30]) {
+        if (h === 22 && m === 30) break;
+        const period = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        opts.push(`${h12}:${String(m).padStart(2,'0')} ${period}`);
+      }
+    }
+    return opts;
+  })();
+  // ── PORTFOLIO ─────────────────────────────────────────────────────────
+  const PORTFOLIO_CATEGORIES = ['All','Sports','Couples','Weddings','Graduation'];
+  /* ============================================================
+     ADD YOUR PHOTOS HERE
+     To add a photo to the portfolio, add an object to this array, e.g.:
+     { category: 'Sports', image: 'https://your-image-url.jpg', caption: 'State Championship 2025' }
+     "category" must be exactly one of: 'Sports', 'Couples', 'Weddings', 'Graduation'
+     "image" is a URL to the photo (upload somewhere and paste the link, or host on Firebase Storage)
+     "caption" is optional text shown on hover
+     ============================================================ */
+  const PORTFOLIO_ITEMS = [];
+  // ── HELPERS ───────────────────────────────────────────────────────────
+  function isCompleteLocation(addr) {
+    if (!addr) return false;
+    const s = addr.trim();
+    if (!/^\d+\s+\S/.test(s)) return false;
+    if (!/\b[A-Za-z]{2}[,\s]+\d{5}\b/.test(s)) return false;
+    if (s.split(/\s+/).length < 4) return false;
+    return true;
+  }
+  function clearLocationError() {
+    const el = document.getElementById('location-error');
+    if (el) el.style.display = 'none';
+  }
+  function parseTime(t) {
+    const [timePart, period] = t.trim().split(' ');
+    let [h, m] = timePart.split(':').map(Number);
+    if (period === 'PM' && h !== 12) h += 12;
+    if (period === 'AM' && h === 12) h = 0;
+    return h * 60 + (m || 0);
+  }
+  function formatTime(value) {
+    const [h24, m] = value.split(':').map(Number);
+    const period = h24 >= 12 ? 'PM' : 'AM';
+    const h = h24 % 12 || 12;
+    return `${h}:${String(m).padStart(2,'0')} ${period}`;
+  }
+  function dateStr(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function displayShootType(a) {
+    return a.shootType === 'Other' ? (a.otherType || 'Other') : a.shootType;
+  }
+  // ── APPOINTMENTS ──────────────────────────────────────────────────────
+  async function getAppointments() {
+    try { const snap = await getDocs(collection(_db, COLL)); return snap.docs.map(d => ({ ...d.data(), _docId: d.id })); }
+    catch(e) { console.error("Appointments read:", e); return []; }
+  }
+  async function addAppointment(appt) {
+    try { await addDoc(collection(_db, COLL), appt); return true; }
+    catch(e) { console.error("Appointments write:", e); return false; }
+  }
+  async function removeAppointment(docId) {
+    try { await deleteDoc(doc(_db, COLL, docId)); } catch(e) { console.error(e); }
+  }
+  // ── BLOCKED AVAILABILITY ──────────────────────────────────────────────
+  let _blockedCache = null, _blockedCacheTime = 0;
+  async function getBlockedSlots() {
+    const now = Date.now();
+    if (_blockedCache && now - _blockedCacheTime < 20000) return _blockedCache;
+    try {
+      const snap = await getDocs(collection(_db, AVAIL_COLL));
+      _blockedCache = snap.docs.map(d => ({ ...d.data(), _docId: d.id }));
+      _blockedCacheTime = now; return _blockedCache;
+    } catch(e) { console.error("Blocked read:", e); return []; }
+  }
+  function invalidateBlockedCache() { _blockedCache = null; }
+  async function addBlockedSlot(data) {
+    try { await addDoc(collection(_db, AVAIL_COLL), data); invalidateBlockedCache(); return true; }
+    catch(e) { console.error("Blocked write:", e); showRulesBanner(); return false; }
+  }
+  async function removeBlockedSlot(docId) {
+    try { await deleteDoc(doc(_db, AVAIL_COLL, docId)); invalidateBlockedCache(); }
+    catch(e) { console.error("Blocked delete:", e); showRulesBanner(); }
+  }
+  // ── CUSTOM SLOTS ──────────────────────────────────────────────────────
+  let _customCache = null, _customCacheTime = 0;
+  async function getCustomSlots() {
+    const now = Date.now();
+    if (_customCache && now - _customCacheTime < 20000) return _customCache;
+    try {
+      const snap = await getDocs(collection(_db, CUSTOM_COLL));
+      _customCache = snap.docs.map(d => ({ ...d.data(), _docId: d.id }));
+      _customCacheTime = now; return _customCache;
+    } catch(e) { console.error("Custom read:", e); return []; }
+  }
+  function invalidateCustomCache() { _customCache = null; }
+  async function addCustomSlot(data) {
+    try { await addDoc(collection(_db, CUSTOM_COLL), data); invalidateCustomCache(); return true; }
+    catch(e) { console.error("Custom write:", e); showRulesBanner(); return false; }
+  }
+  async function removeCustomSlot(docId) {
+    try { await deleteDoc(doc(_db, CUSTOM_COLL, docId)); invalidateCustomCache(); }
+    catch(e) { console.error("Custom delete:", e); showRulesBanner(); }
+  }
+  function showRulesBanner() {
+    const b = document.getElementById('rules-banner');
+    if (b) b.style.display = 'block';
+  }
+  // ── RECURRING RULES ───────────────────────────────────────────────────
+  let _recurringCache = null, _recurringCacheTime = 0;
+  async function getRecurringRules() {
+    const now = Date.now();
+    if (_recurringCache && now - _recurringCacheTime < 20000) return _recurringCache;
+    try {
+      const snap = await getDocs(collection(_db, RECURRING_COLL));
+      _recurringCache = snap.docs.map(d => ({ ...d.data(), _docId: d.id }));
+      _recurringCacheTime = now; return _recurringCache;
+    } catch(e) { console.error("Recurring read:", e); return []; }
+  }
+  function invalidateRecurringCache() { _recurringCache = null; }
+  async function saveRecurringRuleDoc(data, existingDocId) {
+    try {
+      if (existingDocId) await deleteDoc(doc(_db, RECURRING_COLL, existingDocId));
+      await addDoc(collection(_db, RECURRING_COLL), data);
+      invalidateRecurringCache(); return true;
+    } catch(e) { console.error("Recurring write:", e); showRulesBanner(); return false; }
+  }
+  async function deleteRecurringRuleDoc(docId) {
+    try { await deleteDoc(doc(_db, RECURRING_COLL, docId)); invalidateRecurringCache(); }
+    catch(e) { console.error("Recurring delete:", e); showRulesBanner(); }
+  }
+  let _recurringSelectedDay = null;
+  function shortTime(t) {
+    if (!t) return '';
+    const [timePart, period] = t.split(' ');
+    const [h, m] = timePart.split(':');
+    return m === '00' ? `${h} ${period}` : t;
+  }
+  async function renderRecurringPanel() {
+    const rules = await getRecurringRules();
+    const ruleByDay = {};
+    rules.forEach(r => { ruleByDay[r.day] = r; });
+    const container = document.getElementById('recurring-days');
+    if (!container) return;
+    container.innerHTML = DAYS_SHORT.map((d, i) => {
+      const rule = ruleByDay[i];
+      let statusClass = '', statusLabel = 'Open';
+      if (rule) {
+        if (rule.type === 'full_day') { statusClass = 'is-off'; statusLabel = 'Day Off'; }
+        else if (rule.type === 'hours') { statusClass = 'has-hours'; statusLabel = `${shortTime(rule.start)}–${shortTime(rule.end)}`; }
+      }
+      const isSel = _recurringSelectedDay === i;
+      return `<button class="recurring-day-btn ${statusClass}${isSel?' selected':''}" onclick="selectRecurringDay(${i})">
+        <span class="rec-day-name">${d}</span>
+        <span class="rec-day-status">${statusLabel}</span>
+      </button>`;
+    }).join('');
+    const editorEl = document.getElementById('recurring-editor');
+    if (!editorEl) return;
+    if (_recurringSelectedDay === null) { editorEl.innerHTML = ''; return; }
+    const day = _recurringSelectedDay;
+    const rule = ruleByDay[day];
+    const currentType = rule ? rule.type : 'open';
+    const currentStart = rule?.start || '9:00 AM';
+    const currentEnd   = rule?.end   || '5:00 PM';
+    const optHtml = (sel) => HOUR_OPTIONS.map(t => `<option value="${t}"${t===sel?' selected':''}>${t}</option>`).join('');
+    editorEl.innerHTML = `<div class="rec-editor-box">
+      <div class="rec-editor-title">${DAYS_FULL[day]}s</div>
+      <div class="rec-radio-group">
+        <label class="rec-radio"><input type="radio" name="rec-type" value="open" ${currentType==='open'?'checked':''} onchange="recTypeChange(this.value)"><span>Open — show all standard hours</span></label>
+        <label class="rec-radio"><input type="radio" name="rec-type" value="full_day" ${currentType==='full_day'?'checked':''} onchange="recTypeChange(this.value)"><span>Day Off — block every ${DAYS_FULL[day]}</span></label>
+        <label class="rec-radio"><input type="radio" name="rec-type" value="hours" ${currentType==='hours'?'checked':''} onchange="recTypeChange(this.value)"><span>Custom Hours — set a specific time range</span></label>
+      </div>
+      <div class="rec-hours-row" id="rec-hours-row" style="display:${currentType==='hours'?'flex':'none'}">
+        <span style="color:rgba(255,255,255,0.45);font-size:0.82rem;">From</span>
+        <select id="rec-start" class="rec-select">${optHtml(currentStart)}</select>
+        <span style="color:rgba(255,255,255,0.45);font-size:0.82rem;">to</span>
+        <select id="rec-end" class="rec-select">${optHtml(currentEnd)}</select>
+      </div>
+      <div class="rec-editor-actions">
+        <button class="btn-add-time" onclick="applyRecurringRule(${day},'${rule?._docId||''}')">Save</button>
+        ${rule ? `<button class="rec-remove-btn" onclick="clearRecurringRule(${day},'${rule._docId}')">Remove Rule</button>` : ''}
+        <button class="rec-cancel-btn" onclick="cancelRecurringEdit()">Cancel</button>
+      </div>
+    </div>`;
+  }
+  function recTypeChange(val) {
+    const row = document.getElementById('rec-hours-row');
+    if (row) row.style.display = val === 'hours' ? 'flex' : 'none';
+  }
+  function selectRecurringDay(day) {
+    _recurringSelectedDay = _recurringSelectedDay === day ? null : day;
+    renderRecurringPanel();
+  }
+  function cancelRecurringEdit() { _recurringSelectedDay = null; renderRecurringPanel(); }
+  async function applyRecurringRule(day, existingDocId) {
+    const typeEl = document.querySelector('input[name="rec-type"]:checked');
+    if (!typeEl) return;
+    const type = typeEl.value;
+    if (type === 'open') {
+      if (existingDocId) await deleteRecurringRuleDoc(existingDocId);
+      else invalidateRecurringCache();
+      _recurringSelectedDay = null;
+      await renderRecurringPanel(); renderCalendar(); return;
+    }
+    const data = { day, type };
+    if (type === 'hours') {
+      const start = document.getElementById('rec-start')?.value;
+      const end   = document.getElementById('rec-end')?.value;
+      if (!start || !end) { alert('Please select both a start and end time.'); return; }
+      if (parseTime(start) >= parseTime(end)) { alert('Start time must be before end time.'); return; }
+      data.start = start; data.end = end;
+    }
+    const ok = await saveRecurringRuleDoc(data, existingDocId || null);
+    if (ok) { _recurringSelectedDay = null; await renderRecurringPanel(); renderCalendar(); }
+  }
+  async function clearRecurringRule(day, docId) {
+    if (!confirm(`Remove the recurring rule for ${DAYS_FULL[day]}s?`)) return;
+    await deleteRecurringRuleDoc(docId);
+    _recurringSelectedDay = null;
+    await renderRecurringPanel(); renderCalendar();
+  }
+  // ── PAGES ─────────────────────────────────────────────────────────────
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    window.scrollTo(0, 0);
+    if (name === 'admin') renderAdmin();
+    if (name === 'portfolio') { renderPortfolioTabs(); renderPortfolioGrid(); }
+  }
+  // ── BUBBLES ───────────────────────────────────────────────────────────
+  (function() {
+    const container = document.getElementById('bubbles');
+    const sizes = [20,35,55,80,110,140];
+    for (let i = 0; i < 18; i++) {
+      const b = document.createElement('div'); b.className = 'bubble';
+      const s = sizes[Math.floor(Math.random() * sizes.length)];
+      b.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${8+Math.random()*10}s;animation-delay:${-Math.random()*12}s;`;
+      container.appendChild(b);
+    }
+  })();
+  // ── PORTFOLIO ─────────────────────────────────────────────────────────
+  let portfolioFilter = 'All';
+  function renderPortfolioTabs() {
+    const container = document.getElementById('portfolio-tabs');
+    if (!container) return;
+    container.innerHTML = PORTFOLIO_CATEGORIES.map(cat =>
+      `<button class="portfolio-tab${portfolioFilter===cat?' active':''}" onclick="selectPortfolioFilter('${cat}')">${cat}</button>`
+    ).join('');
+  }
+  function selectPortfolioFilter(cat) {
+    portfolioFilter = cat;
+    renderPortfolioTabs(); renderPortfolioGrid();
+  }
+  function openPortfolioCategory(cat) {
+    portfolioFilter = cat;
+    showPage('portfolio');
+  }
+  function renderPortfolioGrid() {
+    const container = document.getElementById('portfolio-grid');
+    if (!container) return;
+    const items = portfolioFilter === 'All' ? PORTFOLIO_ITEMS : PORTFOLIO_ITEMS.filter(i => i.category === portfolioFilter);
+    if (items.length === 0) {
+      container.innerHTML = `<div class="portfolio-empty">
+        <div class="portfolio-empty-icon">📷</div>
+        <p>No photos in this category yet. Check back soon — new shots are added regularly!</p>
+      </div>`;
+      return;
+    }
+    container.innerHTML = `<div class="portfolio-grid">${items.map((item, i) => `
+      <div class="portfolio-item" onclick="openLightbox(${i})">
+        <img src="${item.image}" alt="${item.caption || item.category}" loading="lazy" />
+        ${item.caption ? `<div class="portfolio-item-caption">${item.caption}</div>` : ''}
+      </div>`).join('')}</div>`;
+  }
+  function openLightbox(index) {
+    const items = portfolioFilter === 'All' ? PORTFOLIO_ITEMS : PORTFOLIO_ITEMS.filter(i => i.category === portfolioFilter);
+    const item = items[index];
+    if (!item) return;
+    document.getElementById('lightbox-img').src = item.image;
+    document.getElementById('lightbox-img').alt = item.caption || item.category;
+    document.getElementById('lightbox-caption').textContent = item.caption || '';
+    document.getElementById('lightbox-modal').classList.remove('hidden');
+  }
+  function closeLightbox(e) {
+    if (e) e.stopPropagation();
+    document.getElementById('lightbox-modal').classList.add('hidden');
+  }
+  // ── CLIENT CALENDAR ───────────────────────────────────────────────────
+  let calDate = new Date(); calDate.setDate(1);
+  let selectedDate = null, selectedTime = null;
+  let preselectedShootType = '';
+  const ALL_SLOTS = ['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM'];
+  function openBooking(shootType) {
+    preselectedShootType = shootType || '';
+    selectedDate = null; selectedTime = null;
+    renderCalendar(); updateSummary(); showPage('booking');
+    setTimeout(() => {
+      const sel = document.getElementById('inp-shoot-type');
+      if (sel) { sel.value = preselectedShootType; handleShootTypeChange(); }
+    }, 0);
+  }
+  function handleShootTypeChange() {
+    const sel = document.getElementById('inp-shoot-type');
+    const otherGroup = document.getElementById('shoot-other-group');
+    if (!sel || !otherGroup) return;
+    otherGroup.classList.toggle('hidden', sel.value !== 'Other');
+    updateSummary();
+  }
+  function changeMonth(dir) { calDate.setMonth(calDate.getMonth() + dir); renderCalendar(); }
+  async function renderCalendar() {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const y = calDate.getFullYear(), m = calDate.getMonth();
+    document.getElementById('cal-month-label').textContent = calDate.toLocaleString('default',{month:'long',year:'numeric'});
+    const grid = document.getElementById('cal-grid'); grid.innerHTML = '';
+    ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => { const el = document.createElement('div'); el.className = 'cal-day-label'; el.textContent = d; grid.appendChild(el); });
+    const firstDay = new Date(y,m,1).getDay(), daysInMonth = new Date(y,m+1,0).getDate();
+    for (let i = 0; i < firstDay; i++) { const el = document.createElement('div'); el.className = 'cal-day empty'; grid.appendChild(el); }
+    const [blocked, recurring] = await Promise.all([getBlockedSlots(), getRecurringRules()]);
+    const fullDayBlocked   = new Set(blocked.filter(b => b.type === 'full_day').map(b => b.date));
+    const recurringOffDays = new Set(recurring.filter(r => r.type === 'full_day').map(r => r.day));
+    for (let d = 1; d <= daysInMonth; d++) {
+      const el = document.createElement('div'); el.className = 'cal-day'; el.textContent = d;
+      const thisDate = new Date(y,m,d); const ds = dateStr(thisDate);
+      if (thisDate < today) { el.classList.add('disabled'); }
+      else if (fullDayBlocked.has(ds) || recurringOffDays.has(thisDate.getDay())) { el.classList.add('not-available'); el.title = 'Not available'; }
+      else {
+        if (thisDate.getTime() === today.getTime()) el.classList.add('today');
+        if (selectedDate === ds) el.classList.add('selected');
+        el.onclick = () => selectDate(ds, el);
+      }
+      grid.appendChild(el);
+    }
+  }
+  function selectDate(ds, el) {
+    selectedDate = ds; selectedTime = null;
+    document.querySelectorAll('.cal-day').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected'); renderTimeSlots(); updateSummary();
+  }
+  async function renderTimeSlots() {
+    const container = document.getElementById('time-slots-container');
+    if (!selectedDate) { container.innerHTML = '<div class="no-date">Select a date above.</div>'; return; }
+    container.innerHTML = '<div class="no-date">Loading times…</div>';
+    const [appts, blocked, custom, recurring] = await Promise.all([getAppointments(), getBlockedSlots(), getCustomSlots(), getRecurringRules()]);
+    const bookedTimes  = new Set(appts.filter(a => a.date === selectedDate).map(a => a.time));
+    const blockedTimes = new Set(blocked.filter(b => b.type === 'time_slot' && b.date === selectedDate).map(b => b.time));
+    const takenTimes   = new Set([...bookedTimes, ...blockedTimes]);
+    const customTimes  = custom.filter(c => c.date === selectedDate).map(c => c.time);
+    const dayOfWeek = new Date(selectedDate + 'T12:00:00').getDay();
+    const recurringRule = recurring.find(r => r.day === dayOfWeek);
+    let baseSlots;
+    if (recurringRule && recurringRule.type === 'hours') {
+      const startMins = parseTime(recurringRule.start);
+      const endMins   = parseTime(recurringRule.end);
+      baseSlots = [];
+      for (let mins = startMins; mins <= endMins; mins += 60) {
+        const h24 = Math.floor(mins / 60);
+        const m   = mins % 60;
+        const period = h24 >= 12 ? 'PM' : 'AM';
+        const h12 = h24 % 12 || 12;
+        baseSlots.push(`${h12}:${String(m).padStart(2,'0')} ${period}`);
+      }
+    } else {
+      baseSlots = ALL_SLOTS;
+    }
+    let allSlots = [...new Set([...baseSlots, ...customTimes])].sort((a, b) => parseTime(a) - parseTime(b));
+    container.innerHTML = '<div class="time-slots"></div>';
+    const slotGrid = container.querySelector('.time-slots');
+    allSlots.forEach(t => {
+      const btn = document.createElement('button');
+      const isTaken = takenTimes.has(t);
+      btn.className = 'slot' + (isTaken ? ' taken' : ''); btn.textContent = t;
+      if (!isTaken) {
+        btn.onclick = () => {
+          selectedTime = t;
+          document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+          btn.classList.add('selected'); updateSummary();
+        };
+      }
+      if (selectedTime === t && !isTaken) btn.classList.add('selected');
+      slotGrid.appendChild(btn);
+    });
+  }
+  function updateSummary() {
+    const sum = document.getElementById('booking-summary');
+    const sel = document.getElementById('inp-shoot-type');
+    const typeVal = sel ? sel.value : '';
+    if (selectedDate && selectedTime) {
+      sum.style.display = 'block';
+      document.getElementById('sum-type').textContent = typeVal || 'Not selected yet';
+      document.getElementById('sum-date').textContent = new Date(selectedDate+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      document.getElementById('sum-time').textContent = selectedTime;
+    } else { sum.style.display = 'none'; }
+  }
+  async function confirmBooking() {
+    if (!selectedDate || !selectedTime) { alert('Please select a date and time.'); return; }
+    const shootTypeSel = document.getElementById('inp-shoot-type').value;
+    if (!shootTypeSel) { alert('Please select a type of shoot.'); return; }
+    const otherType = document.getElementById('inp-shoot-other').value.trim();
+    if (shootTypeSel === 'Other' && !otherType) { alert('Please specify the type of shoot.'); return; }
+    const peopleVal = document.getElementById('inp-people').value.trim();
+    const people = parseInt(peopleVal, 10);
+    if (!peopleVal || isNaN(people) || people < 1) { alert('Please enter the number of people involved.'); return; }
+    const location = document.getElementById('inp-location').value.trim();
+    if (!isCompleteLocation(location)) {
+      const errEl = document.getElementById('location-error');
+      if (errEl) { errEl.style.display = 'block'; document.getElementById('inp-location').focus(); }
+      return;
+    }
+    const phone = document.getElementById('inp-phone').value.trim();
+    if (!phone) { alert('Please enter your phone number.'); return; }
+    const notes = document.getElementById('inp-notes').value.trim();
+    const btn = document.getElementById('btn-confirm');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    const appt = { id: Date.now(), shootType: shootTypeSel, otherType: shootTypeSel === 'Other' ? otherType : '', people, date: selectedDate, time: selectedTime, phone, location, notes, booked: new Date().toISOString() };
+    const [appts, blocked] = await Promise.all([getAppointments(), getBlockedSlots()]);
+    const fullDayBlock = blocked.find(b => b.type === 'full_day' && b.date === selectedDate);
+    const timeBlock    = blocked.find(b => b.type === 'time_slot' && b.date === selectedDate && b.time === selectedTime);
+    if (appts.find(a => a.date === selectedDate && a.time === selectedTime) || fullDayBlock || timeBlock) {
+      alert('That time slot is no longer available. Please pick another.');
+      btn.disabled = false; btn.textContent = '📅 Book Session'; renderTimeSlots(); return;
+    }
+    const ok = await addAppointment(appt);
+    if (!ok) { alert('Could not save your booking. Please check your connection and try again.'); btn.disabled = false; btn.textContent = '📅 Book Session'; return; }
+    btn.disabled = false; btn.textContent = '📅 Book Session';
+    const dateLabel = new Date(selectedDate+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    const typeLabel = displayShootType(appt);
+    document.getElementById('success-msg').textContent = `Your ${typeLabel} session request is in for ${dateLabel} at ${selectedTime}. I'll reach out to you soon to go over the details and settle on a price!`;
+    document.getElementById('success-modal').classList.remove('hidden');
+    if (typeof emailjs !== 'undefined') {
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        shootType: typeLabel,
+        date:      dateLabel,
+        time:      selectedTime,
+        people:    people,
+        phone:     phone,
+        location:  location,
+        notes:     notes || 'None'
+      }).catch(e => console.warn('Email notification skipped:', e));
+    }
+    selectedDate = null; selectedTime = null; preselectedShootType = '';
+    ['inp-shoot-type','inp-shoot-other','inp-people','inp-location','inp-phone','inp-notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('shoot-other-group').classList.add('hidden');
+  }
+  function closeSuccess() { document.getElementById('success-modal').classList.add('hidden'); showPage('home'); }
+  // ── ADMIN ─────────────────────────────────────────────────────────────
+  let adminCalDate = new Date(); adminCalDate.setDate(1);
+  let adminSelectedDay = null;
+  let _allAppts = null;
+  onAuthStateChanged(_auth, user => { if (user && document.getElementById('page-admin').classList.contains('active')) renderAdmin(); });
+  function showAdminLogin() {
+    if (_auth.currentUser) { showPage('admin'); return; }
+    document.getElementById('admin-email-input').value = '';
+    document.getElementById('admin-pw-input').value = '';
+    document.getElementById('login-err').style.display = 'none';
+    document.getElementById('login-modal').classList.remove('hidden');
+    setTimeout(() => document.getElementById('admin-email-input').focus(), 100);
+  }
+  async function doLogin() {
+    const email = document.getElementById('admin-email-input').value.trim();
+    const pw    = document.getElementById('admin-pw-input').value;
+    const err   = document.getElementById('login-err');
+    const btn   = document.getElementById('login-btn');
+    btn.textContent = 'Signing in…'; btn.disabled = true;
+    try {
+      await signInWithEmailAndPassword(_auth, email, pw);
+      document.getElementById('login-modal').classList.add('hidden');
+      showPage('admin');
+    } catch(e) {
+      const msgs = {'auth/invalid-credential':'Incorrect email or password.','auth/too-many-requests':'Too many attempts — wait a few minutes.','auth/user-not-found':'No account with that email.','auth/wrong-password':'Incorrect password.'};
+      err.textContent = msgs[e.code] || `Error: ${e.code}`; err.style.display = 'block';
+    }
+    btn.textContent = 'Sign In'; btn.disabled = false;
+  }
+  async function doLogout() { await signOut(_auth); showPage('home'); }
+  function adminGoToday() {
+    adminCalDate = new Date(); adminCalDate.setDate(1);
+    adminSelectedDay = dateStr(new Date());
+    renderAdminCalendar();
+  }
+  function adminCalChangeMonth(dir) { adminCalDate.setMonth(adminCalDate.getMonth() + dir); renderAdminCalendar(); }
+  function renderAdmin() { switchAdminTab('appointments'); }
+  async function renderAdminCalendar() {
+    _allAppts = await getAppointments();
+    const todayDs = dateStr(new Date());
+    const upcomingCount = _allAppts.filter(a => a.date >= todayDs).length;
+    const thisMonthAppts = _allAppts.filter(a => {
+      const [y,m] = a.date.split('-').map(Number);
+      return y === adminCalDate.getFullYear() && m === adminCalDate.getMonth()+1;
+    }).length;
+    document.getElementById('admin-stats').innerHTML = `
+      <div class="stat-card"><div class="stat-num">${upcomingCount}</div><div class="stat-label">Upcoming Sessions</div></div>
+      <div class="stat-card"><div class="stat-num">${thisMonthAppts}</div><div class="stat-label">This Month</div></div>
+      <div class="stat-card"><div class="stat-num">${_allAppts.length}</div><div class="stat-label">All Time</div></div>
+    `;
+    const countByDate = {};
+    _allAppts.forEach(a => { countByDate[a.date] = (countByDate[a.date] || 0) + 1; });
+    const y = adminCalDate.getFullYear(), m = adminCalDate.getMonth();
+    document.getElementById('admin-cal-month-label').textContent = adminCalDate.toLocaleString('default',{month:'long',year:'numeric'});
+    const grid = document.getElementById('admin-cal-grid'); grid.innerHTML = '';
+    ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => {
+      const el = document.createElement('div'); el.className = 'admin-cal-label'; el.textContent = d; grid.appendChild(el);
+    });
+    const firstDay = new Date(y,m,1).getDay(), daysInMonth = new Date(y,m+1,0).getDate();
+    for (let i = 0; i < firstDay; i++) { const el = document.createElement('div'); el.className = 'admin-cal-day empty'; grid.appendChild(el); }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const count = countByDate[ds] || 0;
+      const el = document.createElement('div'); el.className = 'admin-cal-day';
+      const thisDate = new Date(y,m,d); const today = new Date(); today.setHours(0,0,0,0);
+      if (thisDate < today) el.classList.add('past');
+      if (ds === todayDs) el.classList.add('today-admin');
+      if (count > 0) el.classList.add('has-appts');
+      if (ds === adminSelectedDay) el.classList.add('selected');
+      const numEl = document.createElement('div'); numEl.className = 'admin-day-num'; numEl.textContent = d;
+      el.appendChild(numEl);
+      if (count > 0) {
+        const badge = document.createElement('div');
+        badge.className = 'appt-count-badge' + (count >= 3 ? ' many' : '');
+        badge.textContent = count === 1 ? '1 job' : `${count} jobs`;
+        el.appendChild(badge);
+      }
+      el.onclick = () => { adminSelectedDay = ds; renderAdminCalendar(); renderAdminDayDetail(ds); };
+      grid.appendChild(el);
+    }
+    if (adminSelectedDay) renderAdminDayDetail(adminSelectedDay);
+  }
+  function renderAdminDayDetail(ds) {
+    const appts = (_allAppts || []).filter(a => a.date === ds);
+    appts.sort((a,b) => parseTime(a.time) - parseTime(b.time));
+    const dateLabel = new Date(ds+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    document.getElementById('admin-detail-heading').textContent = `📅 ${dateLabel} — ${appts.length} session${appts.length !== 1 ? 's' : ''}`;
+    const list = document.getElementById('appt-list');
+    if (appts.length === 0) { list.innerHTML = `<div class="no-appts"><div class="no-appts-icon">🗓</div><p>No sessions on this day.</p></div>`; return; }
+    list.innerHTML = appts.map(a => `
+      <div class="appt-card">
+        <div class="appt-time-badge">${a.time.replace(' ','<br>')}</div>
+        <div class="appt-info">
+          <h4>${displayShootType(a)} &nbsp;<span class="appt-pkg">👥 ${a.people}</span></h4>
+          <p>📍 ${a.location}</p>
+          <p>📞 ${a.phone}</p>
+          ${a.notes ? `<p style="margin-top:0.3rem;color:rgba(255,255,255,0.35);font-style:italic">${a.notes}</p>` : ''}
+        </div>
+        <div class="appt-actions">
+          <a href="tel:${a.phone.replace(/\D/g,'')}"><button class="action-btn call">📞 Call</button></a>
+          <a href="https://maps.google.com/?q=${encodeURIComponent(a.location)}" target="_blank"><button class="action-btn maps">🗺 Directions</button></a>
+          <button class="action-btn delete" onclick="deleteAppt('${a._docId}','${ds}')">✕ Cancel</button>
+        </div>
+      </div>`).join('');
+  }
+  async function deleteAppt(docId, ds) {
+    if (!confirm('Cancel this session?')) return;
+    await removeAppointment(docId);
+    _allAppts = null;
+    await renderAdminCalendar();
+    if (ds) renderAdminDayDetail(ds);
+  }
+  // ── ADMIN TABS ────────────────────────────────────────────────────────
+  function switchAdminTab(tab) {
+    document.getElementById('tab-appointments').classList.toggle('active', tab === 'appointments');
+    document.getElementById('tab-availability').classList.toggle('active', tab === 'availability');
+    document.getElementById('admin-appointments-view').classList.toggle('hidden', tab !== 'appointments');
+    document.getElementById('admin-availability-view').classList.toggle('hidden', tab !== 'availability');
+    if (tab === 'appointments') {
+      if (!adminSelectedDay) { adminSelectedDay = dateStr(new Date()); }
+      renderAdminCalendar();
+    } else { renderAvailability(); }
+  }
+  // ── AVAILABILITY MANAGEMENT ───────────────────────────────────────────
+  let availCalDate = new Date(); availCalDate.setDate(1);
+  let availSelectedDate = null;
+  function availChangeMonth(dir) { availCalDate.setMonth(availCalDate.getMonth() + dir); renderAvailCal(); }
+  async function renderAvailability() { await renderRecurringPanel(); await renderAvailCal(); await renderBlockedList(); if (availSelectedDate) await renderAvailSlots(); }
+  async function renderAvailCal() {
+    const [blocked, custom] = await Promise.all([getBlockedSlots(), getCustomSlots()]);
+    const fullDayBlocked = new Set(blocked.filter(b => b.type === 'full_day').map(b => b.date));
+    const partialBlocked = new Set(blocked.filter(b => b.type === 'time_slot').map(b => b.date));
+    const hasCustom      = new Set(custom.map(c => c.date));
+    const today = new Date(); today.setHours(0,0,0,0);
+    const y = availCalDate.getFullYear(), m = availCalDate.getMonth();
+    document.getElementById('avail-cal-month').textContent = availCalDate.toLocaleString('default',{month:'long',year:'numeric'});
+    const grid = document.getElementById('avail-cal-grid'); grid.innerHTML = '';
+    ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => { const el = document.createElement('div'); el.className = 'avail-day-label'; el.textContent = d; grid.appendChild(el); });
+    const firstDay = new Date(y,m,1).getDay(), daysInMonth = new Date(y,m+1,0).getDate();
+    for (let i = 0; i < firstDay; i++) { const el = document.createElement('div'); el.className = 'avail-cal-day empty'; grid.appendChild(el); }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const el = document.createElement('div'); el.className = 'avail-cal-day'; el.textContent = d;
+      const thisDate = new Date(y,m,d); const ds = dateStr(thisDate);
+      if (thisDate < today) { el.classList.add('past'); }
+      else {
+        if (thisDate.getTime() === today.getTime()) el.classList.add('today-mark');
+        if (fullDayBlocked.has(ds)) el.classList.add('full-blocked');
+        else if (partialBlocked.has(ds)) el.classList.add('partial-blocked');
+        if (hasCustom.has(ds)) el.style.outline = '1.5px solid rgba(227,168,59,0.5)';
+        if (availSelectedDate === ds) el.classList.add('selected');
+        el.onclick = () => selectAvailDate(ds, el);
+      }
+      grid.appendChild(el);
+    }
+  }
+  async function selectAvailDate(ds, el) {
+    availSelectedDate = ds;
+    document.querySelectorAll('.avail-cal-day').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected'); await renderAvailSlots();
+  }
+  async function renderAvailSlots() {
+    const container = document.getElementById('avail-slots-section');
+    if (!availSelectedDate) { container.innerHTML = '<p class="avail-hint">← Select a date on the calendar to manage its availability.</p>'; return; }
+    const [blocked, custom] = await Promise.all([getBlockedSlots(), getCustomSlots()]);
+    const fullDayBlock = blocked.find(b => b.type === 'full_day' && b.date === availSelectedDate);
+    const timeDocs     = blocked.filter(b => b.type === 'time_slot' && b.date === availSelectedDate);
+    const blockedTimes = new Set(timeDocs.map(b => b.time));
+    const customDocs   = custom.filter(c => c.date === availSelectedDate);
+    const customTimes  = new Set(customDocs.map(c => c.time));
+    const quickOptions = ['5:30 PM','6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM','9:00 PM'].filter(t => !customTimes.has(t));
+    const dateLabel = new Date(availSelectedDate+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    container.innerHTML = `
+      <h4 style="color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px;margin-bottom:1rem;">${dateLabel}</h4>
+      <button class="block-day-btn ${fullDayBlock ? 'is-blocked' : ''}"
+        onclick="toggleBlockDay('${availSelectedDate}','${fullDayBlock?._docId||''}')">
+        ${fullDayBlock ? '✅ Full Day Blocked — Click to Unblock' : '🚫 Block Entire Day'}
+      </button>
+      <hr class="avail-hr">
+      <p class="avail-section-label">Block specific times</p>
+      <div class="avail-time-grid">
+        ${ALL_SLOTS.map(t => {
+          const isBlocked = blockedTimes.has(t);
+          const tDoc = timeDocs.find(d => d.time === t);
+          return `<button class="avail-slot-btn ${isBlocked?'is-blocked':''}"
+            onclick="toggleBlockTime('${availSelectedDate}','${t}','${tDoc?._docId||''}')"
+            ${fullDayBlock?'disabled title="Whole day is blocked"':''}>
+            ${isBlocked?'🚫 ':''}${t}</button>`;
+        }).join('')}
+      </div>
+      <hr class="avail-hr">
+      <p class="avail-section-label">Extra hours for this day</p>
+      ${customDocs.length > 0 ? customDocs.sort((a,b) => parseTime(a.time)-parseTime(b.time)).map(c =>
+        `<div class="custom-slot-row">
+          <span>🕐 ${c.time}</span>
+          <button class="custom-slot-remove" onclick="removeCustomSlotFromDate('${c._docId}','${availSelectedDate}')" title="Remove this time">✕</button>
+        </div>`).join('') : '<p style="font-size:0.78rem;color:rgba(255,255,255,0.25);margin-bottom:0.5rem;">No extra hours added yet.</p>'}
+      <div class="add-custom-time">
+        <input type="time" id="custom-time-input" step="900" />
+        <button class="btn-add-time" onclick="addCustomSlotForDate('${availSelectedDate}')">+ Add</button>
+      </div>
+      ${quickOptions.length > 0 ? `<div class="quick-times">${quickOptions.map(t =>
+        `<button class="quick-time-btn" onclick="quickAddCustomSlot('${availSelectedDate}','${t}')">${t}</button>`).join('')}
+      </div>` : ''}
+      <p style="font-size:0.7rem;color:rgba(255,255,255,0.22);margin-top:0.6rem;line-height:1.5;">Use the time picker or click a quick-add button to open extra hours on this day.</p>
+    `;
+  }
+  async function addCustomSlotForDate(ds) {
+    const input = document.getElementById('custom-time-input');
+    if (!input || !input.value) { alert('Please pick a time first.'); return; }
+    const timeStr = formatTime(input.value);
+    const custom = await getCustomSlots();
+    if (custom.find(c => c.date === ds && c.time === timeStr)) { alert(`${timeStr} is already added for this day.`); return; }
+    const ok = await addCustomSlot({ date: ds, time: timeStr });
+    if (ok) { input.value = ''; await renderAvailSlots(); await renderAvailCal(); await renderBlockedList(); }
+  }
+  async function quickAddCustomSlot(ds, time) {
+    const custom = await getCustomSlots();
+    if (custom.find(c => c.date === ds && c.time === time)) return;
+    const ok = await addCustomSlot({ date: ds, time });
+    if (ok) { await renderAvailSlots(); await renderAvailCal(); await renderBlockedList(); }
+  }
+  async function removeCustomSlotFromDate(docId, ds) {
+    await removeCustomSlot(docId);
+    await renderAvailSlots(); await renderAvailCal(); await renderBlockedList();
+    if (document.getElementById('page-booking').classList.contains('active') && selectedDate === ds) renderTimeSlots();
+  }
+  async function toggleBlockDay(ds, docId) {
+    if (docId) {
+      await removeBlockedSlot(docId);
+    } else {
+      const blocked    = await getBlockedSlots();
+      const timeBlocks = blocked.filter(b => b.type === 'time_slot' && b.date === ds);
+      await Promise.all(timeBlocks.map(b => removeBlockedSlot(b._docId)));
+      const ok = await addBlockedSlot({ type: 'full_day', date: ds });
+      if (!ok) return;
+    }
+    await renderAvailability();
+    if (document.getElementById('page-booking').classList.contains('active')) renderCalendar();
+  }
+  async function toggleBlockTime(ds, time, docId) {
+    if (docId) {
+      await removeBlockedSlot(docId);
+    } else {
+      const ok = await addBlockedSlot({ type: 'time_slot', date: ds, time });
+      if (!ok) return;
+    }
+    await renderAvailSlots(); await renderAvailCal(); await renderBlockedList();
+    if (document.getElementById('page-booking').classList.contains('active') && selectedDate === ds) renderTimeSlots();
+  }
+  async function renderBlockedList() {
+    const container = document.getElementById('blocked-list');
+    const [blocked, custom] = await Promise.all([getBlockedSlots(), getCustomSlots()]);
+    const todayDs = dateStr(new Date());
+    const upcoming = blocked.filter(b => b.date >= todayDs);
+    const upcomingCustom = custom.filter(c => c.date >= todayDs);
+    const allDates = new Set([...upcoming.map(b => b.date), ...upcomingCustom.map(c => c.date)]);
+    if (allDates.size === 0) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:0.85rem;text-align:center;padding:1rem 0;">No blocked dates or custom hours.</p>'; return; }
+    const byDate = {};
+    upcoming.forEach(b => {
+      if (!byDate[b.date]) byDate[b.date] = { full: null, times: [], custom: [] };
+      if (b.type === 'full_day') byDate[b.date].full = b; else byDate[b.date].times.push(b);
+    });
+    upcomingCustom.forEach(c => {
+      if (!byDate[c.date]) byDate[c.date] = { full: null, times: [], custom: [] };
+      byDate[c.date].custom.push(c);
+    });
+    container.innerHTML = Object.entries(byDate).sort(([a],[b]) => a.localeCompare(b)).map(([date, data]) => {
+      const label = new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      const sortedTimes  = data.times.sort((a,b) => parseTime(a.time)-parseTime(b.time));
+      const sortedCustom = data.custom.sort((a,b) => parseTime(a.time)-parseTime(b.time));
+      return `<div class="blocked-item">
+        <div class="blocked-item-date">${label}</div>
+        <div class="blocked-tags">
+          ${data.full ? `<span class="btag btag-full">Full Day</span>` : ''}
+          ${sortedTimes.map(t => `<span class="btag btag-time">${t.time}</span>`).join('')}
+          ${sortedCustom.map(c => `<span class="btag btag-custom">+${c.time}</span>`).join('')}
+        </div>
+        <button class="action-btn delete" onclick="unblockDate('${date}')" title="Clear all changes for this date">✕ Clear</button>
+      </div>`;
+    }).join('');
+  }
+  async function unblockDate(ds) {
+    if (!confirm('Remove all blocks and custom hours for this date?')) return;
+    const [blocked, custom] = await Promise.all([getBlockedSlots(), getCustomSlots()]);
+    await Promise.all([
+      ...blocked.filter(b => b.date === ds).map(b => removeBlockedSlot(b._docId)),
+      ...custom.filter(c => c.date === ds).map(c => removeCustomSlot(c._docId))
+    ]);
+    availSelectedDate = null; await renderAvailability();
+    if (document.getElementById('page-booking').classList.contains('active')) renderCalendar();
+  }
+  // ── EXPORT TO ICS ─────────────────────────────────────────────────────
+  async function exportWeekToICS() {
+    const today = new Date();
+    const sunday = new Date(today);
+    sunday.setDate(today.getDate() - today.getDay());
+    sunday.setHours(0,0,0,0);
+    const saturday = new Date(sunday);
+    saturday.setDate(sunday.getDate() + 6);
+    saturday.setHours(23,59,59,999);
+    const sundayDs   = dateStr(sunday);
+    const saturdayDs = dateStr(saturday);
+    const appts = await getAppointments();
+    const weekAppts = appts.filter(a => a.date >= sundayDs && a.date <= saturdayDs);
+    weekAppts.sort((a,b) => a.date.localeCompare(b.date) || parseTime(a.time) - parseTime(b.time));
+    if (weekAppts.length === 0) {
+      alert('No sessions this week to export.'); return;
+    }
+    function toICSDate(dateDs, timeStr) {
+      const [y, m, d] = dateDs.split('-').map(Number);
+      const mins = parseTime(timeStr);
+      const h = Math.floor(mins / 60);
+      const min = mins % 60;
+      return `${String(y)}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}T${String(h).padStart(2,'0')}${String(min).padStart(2,'0')}00`;
+    }
+    function escICS(str) { return (str||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Flicks for Champs//Sessions//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH'
+    ];
+    weekAppts.forEach(a => {
+      const start = toICSDate(a.date, a.time);
+      const endMins = parseTime(a.time) + 120;
+      const endH = Math.floor(endMins / 60) % 24;
+      const endM = endMins % 60;
+      const [y, m, d] = a.date.split('-').map(Number);
+      const end = `${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}T${String(endH).padStart(2,'0')}${String(endM).padStart(2,'0')}00`;
+      const typeLabel = displayShootType(a);
+      const desc = [
+        `People: ${a.people}`,
+        `Phone: ${a.phone}`,
+        a.notes ? `Notes: ${a.notes}` : null
+      ].filter(Boolean).join('\\n');
+      lines.push('BEGIN:VEVENT');
+      lines.push(`DTSTART:${start}`);
+      lines.push(`DTEND:${end}`);
+      lines.push(`SUMMARY:${escICS(typeLabel)} Shoot — Flicks for Champs`);
+      lines.push(`LOCATION:${escICS(a.location)}`);
+      lines.push(`DESCRIPTION:${escICS(desc)}`);
+      lines.push(`UID:flicksforchamps-${a.id || Date.now()}-${a.date}`);
+      lines.push('END:VEVENT');
+    });
+    lines.push('END:VCALENDAR');
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const weekLabel = `${sundayDs}-to-${saturdayDs}`;
+    a.href = url; a.download = `flicks-for-champs-week-${weekLabel}.ics`;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+  // ── INIT ──────────────────────────────────────────────────────────────
+  renderCalendar();
+  Object.assign(window, {
+    showPage, openBooking, changeMonth, selectDate, handleShootTypeChange,
+    confirmBooking, closeSuccess, clearLocationError, showAdminLogin, doLogin, doLogout, exportWeekToICS,
+    adminGoToday, adminCalChangeMonth, deleteAppt,
+    switchAdminTab, availChangeMonth,
+    toggleBlockDay, toggleBlockTime, unblockDate,
+    addCustomSlotForDate, quickAddCustomSlot, removeCustomSlotFromDate,
+    selectRecurringDay, applyRecurringRule, clearRecurringRule, recTypeChange, cancelRecurringEdit,
+    openPortfolioCategory, selectPortfolioFilter, openLightbox, closeLightbox
+  });
+</script>
+</body>
+</html>
