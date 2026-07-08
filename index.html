@@ -175,7 +175,7 @@
   .booking-summary strong { color: var(--white); }
   .summary-row { display: flex; justify-content: space-between; padding: 0.2rem 0; }
   .success-modal { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 1rem; overflow: hidden; }
-  .confetti-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+  .confetti-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
   .confetti-piece { position: absolute; top: -20px; border-radius: 1px; }
   @keyframes confetti-fall { to { transform: translateY(115vh) rotate(640deg); opacity: 0.85; } }
   .success-box { position: relative; z-index: 2; background: var(--panel); border-radius: 16px; padding: 3rem 2.5rem; text-align: center; max-width: 420px; width: 100%; border: 2px solid var(--gold); animation: popIn 0.3s ease; }
@@ -258,6 +258,20 @@
   .quick-time-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(166,52,42,0.12); }
   .blocked-list-panel { background: rgba(42,29,20,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; }
   .blocked-list-panel h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: var(--gold); margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+  .admin-photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+  .admin-photo-card { background: rgba(42,29,20,0.03); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+  .admin-photo-card img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; background: rgba(42,29,20,0.06); }
+  .admin-photo-meta { padding: 0.55rem 0.6rem 0.2rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .admin-photo-caption { font-size: 0.72rem; color: var(--text-muted); line-height: 1.35; }
+  .admin-photo-actions { display: flex; gap: 0.4rem; padding: 0.6rem; margin-top: auto; }
+  .admin-photo-actions button { flex: 1; padding: 0.4rem; font-size: 0.7rem; border-radius: 5px; border: 1px solid var(--border-strong); background: transparent; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 600; transition: all 0.15s; }
+  .admin-photo-actions .edit-btn { color: var(--gold); }
+  .admin-photo-actions .edit-btn:hover { background: var(--gold); color: var(--panel); }
+  .admin-photo-actions .delete-btn { color: var(--danger); border-color: rgba(220,80,80,0.3); }
+  .admin-photo-actions .delete-btn:hover { background: var(--danger); color: var(--panel); }
+  .admin-photo-card.editing { padding: 0.6rem; gap: 0.4rem; }
+  .admin-photo-card.editing select, .admin-photo-card.editing input { margin-bottom: 0.4rem; }
+  .admin-photo-empty { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 2.5rem 0; }
   .blocked-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.65rem 0; border-bottom: 1px solid rgba(42,29,20,0.05); flex-wrap: wrap; }
   .blocked-item:last-child { border-bottom: none; }
   .blocked-item-date { font-weight: 600; color: rgba(42,29,20,0.7); font-size: 0.85rem; min-width: 110px; }
@@ -557,6 +571,7 @@
       <div class="admin-tabs">
         <button class="admin-tab active" id="tab-appointments" onclick="switchAdminTab('appointments')">📅 Appointments</button>
         <button class="admin-tab" id="tab-availability" onclick="switchAdminTab('availability')">🚫 Manage Availability</button>
+        <button class="admin-tab" id="tab-portfolio" onclick="switchAdminTab('portfolio')">🖼️ Portfolio</button>
       </div>
       <div id="admin-appointments-view">
         <div class="admin-stats" id="admin-stats"></div>
@@ -585,7 +600,7 @@
       <div id="admin-availability-view" class="hidden">
         <div class="rules-banner" id="rules-banner">
           ⚠️ <strong>Could not save changes.</strong> Your Firestore security rules are likely blocking writes.
-          Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a> → Firestore Database → Rules and make sure authenticated users can write. Also add a rule for the <code>recurring_rules</code> collection.
+          Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a> → Firestore Database → Rules and make sure authenticated users can write. Also add rules for the <code>recurring_rules</code>, <code>portfolio_photos</code>, and <code>site_settings</code> collections.
         </div>
         <div class="recurring-panel">
           <h3>📆 Recurring Schedule</h3>
@@ -618,6 +633,28 @@
         <div class="blocked-list-panel">
           <h3>🚫 All Blocked &amp; Custom Hours</h3>
           <div id="blocked-list"><p style="color:rgba(42,29,20,0.3);font-size:0.85rem;text-align:center;padding:1rem 0;">No blocked dates or custom hours.</p></div>
+        </div>
+      </div>
+      <div id="admin-portfolio-view" class="hidden">
+        <div class="avail-panel" style="margin-bottom:1.5rem;">
+          <h3>➕ Add a Photo</h3>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="new-photo-category">
+              <option value="Sports">Sports</option>
+              <option value="Couples">Couples</option>
+              <option value="Weddings">Weddings</option>
+              <option value="Graduation">Graduation</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Image URL</label><input type="text" id="new-photo-url" placeholder="https://i.postimg.cc/..." /></div>
+          <div class="form-group"><label>Caption (optional)</label><input type="text" id="new-photo-caption" placeholder="e.g. State Championship 2025" /></div>
+          <button class="btn-add-time" onclick="addNewPortfolioPhoto()">+ Add Photo</button>
+        </div>
+        <div class="blocked-list-panel">
+          <h3>🖼️ Manage Portfolio Photos</h3>
+          <div class="portfolio-tabs" id="admin-portfolio-tabs" style="justify-content:flex-start;padding:0 0 1rem;"></div>
+          <div id="admin-portfolio-grid"></div>
         </div>
       </div>
     </div>
@@ -659,7 +696,7 @@
     appId:             "1:12153940692:web:a7be00f90680837f28e941"
   };
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc }
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, getDoc, setDoc }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -675,6 +712,8 @@
   const AVAIL_COLL     = "blocked_availability";
   const CUSTOM_COLL    = "custom_slots";
   const RECURRING_COLL = "recurring_rules";
+  const PORTFOLIO_COLL = "portfolio_photos";
+  const SETTINGS_COLL  = "site_settings";
   const DAYS_FULL  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const HOUR_OPTIONS = (() => {
@@ -692,14 +731,14 @@
   // ── PORTFOLIO ─────────────────────────────────────────────────────────
   const PORTFOLIO_CATEGORIES = ['All','Sports','Couples','Weddings','Graduation'];
   /* ============================================================
-     ADD YOUR PHOTOS HERE
-     To add a photo to the portfolio, add an object to this array, e.g.:
-     { category: 'Sports', image: 'https://your-image-url.jpg', caption: 'State Championship 2025' }
-     "category" must be exactly one of: 'Sports', 'Couples', 'Weddings', 'Graduation'
-     "image" is a URL to the photo (upload somewhere and paste the link, or host on Firebase Storage)
-     "caption" is optional text shown on hover
+     INITIAL PHOTO SEED
+     These photos are written to Firestore automatically the first time
+     the site ever loads (see ensurePortfolioSeeded below). After that,
+     all portfolio management (adding, editing, removing photos) happens
+     from the Admin Dashboard's Portfolio tab — this array is no longer
+     read from directly.
      ============================================================ */
-  const PORTFOLIO_ITEMS = [
+  const PORTFOLIO_SEED_ITEMS = [
     { category: 'Sports', image: 'https://i.postimg.cc/w3HXdMzm/IMG-0001.jpg' },
     { category: 'Sports', image: 'https://i.postimg.cc/kD9QdGCs/IMG-0002.jpg' },
     { category: 'Sports', image: 'https://i.postimg.cc/pyxftrvc/IMG-0003.jpg' },
@@ -731,6 +770,41 @@
     { category: 'Sports', image: 'https://i.postimg.cc/PLYwgsFy/IMG-9998.jpg' },
     { category: 'Sports', image: 'https://i.postimg.cc/f3m9Gng8/IMG-9999.jpg' }
   ];
+  // ── PORTFOLIO PHOTOS (Firestore-backed, managed from Admin > Portfolio) ─
+  let _portfolioCache = null, _portfolioCacheTime = 0;
+  let _portfolioSeedChecked = false;
+  async function ensurePortfolioSeeded() {
+    if (_portfolioSeedChecked) return;
+    _portfolioSeedChecked = true;
+    try {
+      const markerRef = doc(_db, SETTINGS_COLL, 'portfolio_seed');
+      const markerSnap = await getDoc(markerRef);
+      if (markerSnap.exists()) return;
+      await Promise.all(PORTFOLIO_SEED_ITEMS.map(item => addDoc(collection(_db, PORTFOLIO_COLL), item)));
+      await setDoc(markerRef, { seededAt: new Date().toISOString() });
+    } catch(e) { console.error("Portfolio seed:", e); }
+  }
+  async function getPortfolioPhotos() {
+    const now = Date.now();
+    if (_portfolioCache && now - _portfolioCacheTime < 20000) return _portfolioCache;
+    try {
+      const snap = await getDocs(collection(_db, PORTFOLIO_COLL));
+      _portfolioCache = snap.docs.map(d => ({ ...d.data(), _docId: d.id }));
+      _portfolioCacheTime = now; return _portfolioCache;
+    } catch(e) { console.error("Portfolio read:", e); return []; }
+  }
+  function invalidatePortfolioCache() { _portfolioCache = null; }
+  async function savePortfolioPhoto(data, existingDocId) {
+    try {
+      if (existingDocId) await deleteDoc(doc(_db, PORTFOLIO_COLL, existingDocId));
+      await addDoc(collection(_db, PORTFOLIO_COLL), data);
+      invalidatePortfolioCache(); return true;
+    } catch(e) { console.error("Portfolio write:", e); showRulesBanner(); return false; }
+  }
+  async function removePortfolioPhoto(docId) {
+    try { await deleteDoc(doc(_db, PORTFOLIO_COLL, docId)); invalidatePortfolioCache(); return true; }
+    catch(e) { console.error("Portfolio delete:", e); showRulesBanner(); return false; }
+  }
   // ── HELPERS ───────────────────────────────────────────────────────────
   function isCompleteLocation(addr) {
     if (!addr) return false;
@@ -1031,10 +1105,14 @@
     portfolioFilter = cat;
     showPage('portfolio');
   }
-  function renderPortfolioGrid() {
+  let _portfolioRenderedItems = [];
+  async function renderPortfolioGrid() {
     const container = document.getElementById('portfolio-grid');
     if (!container) return;
-    const items = portfolioFilter === 'All' ? PORTFOLIO_ITEMS : PORTFOLIO_ITEMS.filter(i => i.category === portfolioFilter);
+    container.innerHTML = `<div class="portfolio-empty"><p>Loading photos…</p></div>`;
+    const all = await getPortfolioPhotos();
+    const items = portfolioFilter === 'All' ? all : all.filter(i => i.category === portfolioFilter);
+    _portfolioRenderedItems = items;
     if (items.length === 0) {
       container.innerHTML = `<div class="portfolio-empty">
         <div class="portfolio-empty-icon">📷</div>
@@ -1049,8 +1127,7 @@
       </div>`).join('')}</div>`;
   }
   function openLightbox(index) {
-    const items = portfolioFilter === 'All' ? PORTFOLIO_ITEMS : PORTFOLIO_ITEMS.filter(i => i.category === portfolioFilter);
-    const item = items[index];
+    const item = _portfolioRenderedItems[index];
     if (!item) return;
     document.getElementById('lightbox-img').src = item.image;
     document.getElementById('lightbox-img').alt = item.caption || item.category;
@@ -1185,7 +1262,8 @@
   function spawnConfetti() {
     const layer = document.getElementById('confetti-layer');
     if (!layer) return;
-    const colors = ['#A6342A', '#1A1210'];
+    const siteRed = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || '#A6342A';
+    const colors = [siteRed, '#1A1210'];
     layer.innerHTML = Array.from({ length: 70 }).map((_, i) => {
       const color = colors[i % 2];
       const left = Math.random() * 100;
@@ -1377,12 +1455,97 @@
   function switchAdminTab(tab) {
     document.getElementById('tab-appointments').classList.toggle('active', tab === 'appointments');
     document.getElementById('tab-availability').classList.toggle('active', tab === 'availability');
+    document.getElementById('tab-portfolio').classList.toggle('active', tab === 'portfolio');
     document.getElementById('admin-appointments-view').classList.toggle('hidden', tab !== 'appointments');
     document.getElementById('admin-availability-view').classList.toggle('hidden', tab !== 'availability');
+    document.getElementById('admin-portfolio-view').classList.toggle('hidden', tab !== 'portfolio');
     if (tab === 'appointments') {
       if (!adminSelectedDay) { adminSelectedDay = dateStr(new Date()); }
       renderAdminCalendar();
-    } else { renderAvailability(); }
+    } else if (tab === 'availability') { renderAvailability(); }
+    else { renderAdminPortfolio(); }
+  }
+  // ── ADMIN PORTFOLIO MANAGEMENT ────────────────────────────────────────
+  let adminPortfolioFilter = 'All';
+  let _editingPhotoId = null;
+  function renderAdminPortfolioTabs() {
+    const el = document.getElementById('admin-portfolio-tabs');
+    if (!el) return;
+    el.innerHTML = PORTFOLIO_CATEGORIES.map(cat =>
+      `<button class="portfolio-tab${adminPortfolioFilter===cat?' active':''}" onclick="selectAdminPortfolioFilter('${cat}')">${cat}</button>`
+    ).join('');
+  }
+  function selectAdminPortfolioFilter(cat) { adminPortfolioFilter = cat; renderAdminPortfolio(); }
+  async function renderAdminPortfolio() {
+    renderAdminPortfolioTabs();
+    const container = document.getElementById('admin-portfolio-grid');
+    if (!container) return;
+    container.innerHTML = `<p class="admin-photo-empty">Loading…</p>`;
+    await ensurePortfolioSeeded();
+    const all = await getPortfolioPhotos();
+    const items = adminPortfolioFilter === 'All' ? all : all.filter(i => i.category === adminPortfolioFilter);
+    if (items.length === 0) {
+      container.innerHTML = `<p class="admin-photo-empty">No photos in this category yet. Add one above!</p>`;
+      return;
+    }
+    container.innerHTML = `<div class="admin-photo-grid">${items.map(item => renderAdminPhotoCard(item)).join('')}</div>`;
+  }
+  function renderAdminPhotoCard(item) {
+    const docId = item._docId;
+    if (_editingPhotoId === docId) {
+      const catOptions = PORTFOLIO_CATEGORIES.filter(c => c !== 'All')
+        .map(c => `<option value="${c}"${c===item.category?' selected':''}>${c}</option>`).join('');
+      return `<div class="admin-photo-card editing">
+        <img src="${item.image}" alt="${item.category}" />
+        <div style="padding:0.6rem;">
+          <select id="edit-cat-${docId}">${catOptions}</select>
+          <input type="text" id="edit-url-${docId}" value="${item.image.replace(/"/g,'&quot;')}" placeholder="Image URL" />
+          <input type="text" id="edit-caption-${docId}" value="${(item.caption||'').replace(/"/g,'&quot;')}" placeholder="Caption (optional)" />
+          <div class="admin-photo-actions" style="padding:0;">
+            <button class="edit-btn" onclick="saveEditPhoto('${docId}')">Save</button>
+            <button class="delete-btn" onclick="cancelEditPhoto()">Cancel</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `<div class="admin-photo-card">
+      <img src="${item.image}" alt="${item.caption||item.category}" loading="lazy" />
+      <div class="admin-photo-meta">
+        <span class="btag btag-custom">${item.category}</span>
+        ${item.caption ? `<span class="admin-photo-caption">${item.caption}</span>` : ''}
+      </div>
+      <div class="admin-photo-actions">
+        <button class="edit-btn" onclick="startEditPhoto('${docId}')">✎ Edit</button>
+        <button class="delete-btn" onclick="deletePortfolioPhotoConfirm('${docId}')">✕ Delete</button>
+      </div>
+    </div>`;
+  }
+  function startEditPhoto(docId) { _editingPhotoId = docId; renderAdminPortfolio(); }
+  function cancelEditPhoto() { _editingPhotoId = null; renderAdminPortfolio(); }
+  async function saveEditPhoto(docId) {
+    const category = document.getElementById(`edit-cat-${docId}`).value;
+    const image = document.getElementById(`edit-url-${docId}`).value.trim();
+    const caption = document.getElementById(`edit-caption-${docId}`).value.trim();
+    if (!image) { alert('Please enter an image URL.'); return; }
+    const ok = await savePortfolioPhoto({ category, image, caption }, docId);
+    if (ok) { _editingPhotoId = null; renderAdminPortfolio(); }
+  }
+  async function deletePortfolioPhotoConfirm(docId) {
+    if (!confirm('Delete this photo from the portfolio?')) return;
+    await removePortfolioPhoto(docId);
+    renderAdminPortfolio();
+  }
+  async function addNewPortfolioPhoto() {
+    const category = document.getElementById('new-photo-category').value;
+    const image = document.getElementById('new-photo-url').value.trim();
+    const caption = document.getElementById('new-photo-caption').value.trim();
+    if (!image) { alert('Please enter an image URL.'); return; }
+    const ok = await savePortfolioPhoto({ category, image, caption });
+    if (ok) {
+      document.getElementById('new-photo-url').value = '';
+      document.getElementById('new-photo-caption').value = '';
+      renderAdminPortfolio();
+    }
   }
   // ── AVAILABILITY MANAGEMENT ───────────────────────────────────────────
   let availCalDate = new Date(); availCalDate.setDate(1);
@@ -1627,7 +1790,8 @@
     toggleBlockDay, toggleBlockTime, unblockDate,
     addCustomSlotForDate, quickAddCustomSlot, removeCustomSlotFromDate,
     selectRecurringDay, applyRecurringRule, clearRecurringRule, recTypeChange, cancelRecurringEdit,
-    openPortfolioCategory, selectPortfolioFilter, openLightbox, closeLightbox
+    openPortfolioCategory, selectPortfolioFilter, openLightbox, closeLightbox,
+    selectAdminPortfolioFilter, startEditPhoto, cancelEditPhoto, saveEditPhoto, deletePortfolioPhotoConfirm, addNewPortfolioPhoto
   });
 </script>
 </body>
